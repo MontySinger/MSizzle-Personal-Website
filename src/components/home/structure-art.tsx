@@ -1,14 +1,12 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 /** Finished artwork remains visible without JS; particles derive from its ink. */
 export function StructureArt({ kind, essay }: { kind: "systems" | "press"; essay?: { title: string; href: string } }) {
   const root = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
-  const [paused, setPaused] = useState(false);
-  const pause = useRef(false);
   const press = kind === "press";
   const src = `/artwork/ink-${press ? "press" : "systems"}.webp`;
   useEffect(() => {
@@ -56,18 +54,17 @@ export function StructureArt({ kind, essay }: { kind: "systems" | "press"; essay
       }
     }
     function update() {
-      if (pause.current) return;
       progress = trigger?.progress ?? .5;
       el!.style.setProperty("--art-progress", String(preference.matches ? .5 : progress));
       draw(); schedule();
     }
     function tick(timestamp: number) {
       request = 0;
-      if (!visible || disposed || document.hidden || pause.current || preference.matches) return;
+      if (!visible || disposed || document.hidden || preference.matches) return;
       if (timestamp - last > 32) { time += Math.min(timestamp - last, 50) / 1000; last = timestamp; draw(); }
       schedule();
     }
-    function schedule() { if (!request && ready && visible && !disposed && !pause.current && !document.hidden && !preference.matches) request = requestAnimationFrame(tick); }
+    function schedule() { if (!request && ready && visible && !disposed && !document.hidden && !preference.matches) request = requestAnimationFrame(tick); }
     const observer = typeof IntersectionObserver === "undefined" ? null : new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; schedule(); });
     observer?.observe(el);
     source.onload = () => { if (!disposed) { ready = true; measure(); update(); } }; source.src = src;
@@ -81,12 +78,10 @@ export function StructureArt({ kind, essay }: { kind: "systems" | "press"; essay
     }
     document.addEventListener("visibilitychange", update);
     preference.addEventListener("change", update);
-    el.addEventListener("art-motion-change", update);
-    return () => { disposed = true; source.onload = null; observer?.disconnect(); trigger?.kill(); cancelAnimationFrame(request); document.removeEventListener("visibilitychange", update); preference.removeEventListener("change", update); el.removeEventListener("art-motion-change", update); };
+    return () => { disposed = true; source.onload = null; observer?.disconnect(); trigger?.kill(); cancelAnimationFrame(request); document.removeEventListener("visibilitychange", update); preference.removeEventListener("change", update); };
   }, [press, src]);
-  function toggle() { pause.current = !pause.current; setPaused(pause.current); root.current?.dispatchEvent(new Event("art-motion-change")); }
   return <div ref={root} className={`finished-art ${press ? "finished-press" : "finished-systems"}`}>
-    <div className="finished-art-top"><span>{press ? "Ideas, put into print." : "Prometheus"}</span><button onClick={toggle} aria-pressed={paused}>{paused ? "Resume motion" : "Pause motion"}</button></div>
+    <div className="finished-art-top"><span>{press ? "Ideas, put into print." : "Prometheus"}</span></div>
     <div className="finished-art-stage">
       <Image src={press ? "/artwork/ink-press-base.webp" : src} alt={press ? "Printing press transitioning from rich halftone ink into precise mechanical linework" : "Connected systems transitioning from dimensional halftone spheres into fine construction lines"} fill sizes="(max-width: 767px) 100vw, 1100px" />
       <canvas ref={canvas} aria-hidden="true" />

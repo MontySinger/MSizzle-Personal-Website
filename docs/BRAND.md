@@ -6,7 +6,7 @@ Warm white, near-black, Hanken Grotesk at weight 800, compact supporting typogra
 
 The opening uses the Teton hike as a full-screen photograph. Native scroll transforms the actual image pixels through halftone, contours and particles. Building has a monochrome connected systems composition anchored by the real Prometheus project. Writing has a geometric two-roller press feeding toward the real essay list. The existing Things I Love pinboard remains intact.
 
-Ambient motion is small and slow, paused outside the viewport and when the document is hidden. Scroll drives the press crank and sheet. Each artwork has a pause control; reduced motion keeps the original photograph and static artwork. Links and essay titles are ordinary accessible HTML, not painted into artwork.
+Ambient motion is small and slow, paused outside the viewport and when the document is hidden. Scroll drives the press crank and sheet. Artwork has no visible pause controls; the device's reduced-motion preference keeps the original photograph and static artwork. Links and essay titles are ordinary accessible HTML, not painted into artwork.
 
 ## Finished artwork revision
 
@@ -16,6 +16,6 @@ Asset prompts: press only, transparent background, rich black halftone at left b
 
 Composition: the mountain photograph opens the page at full viewport height. Monty's name sits at the left in open sky, solid white on the photograph, then solid black through the ink and fine-line stages. The name keeps its filled editorial lettering throughout; no stencil or outline treatment. Mobile keeps two lines; desktop uses one. Supporting copy and the Into the field link sit in a readable paper-colored caption strip. Native scrolling and a CSS sticky viewport carry the photograph through finished halftone and fine-line derivatives; ScrollTrigger batches progress updates.
 
-The press is layered into `ink-press-base.webp` and `ink-press-moving.webp`. The crank turns around its shaft as the blank sheet feeds toward the archive. The newest actual essay remains a normal HTML link on that sheet. Particles derive from the original ink. Reduced motion, pause controls, and offscreen/hidden-tab suspension remain required.
+The press is layered into `ink-press-base.webp` and `ink-press-moving.webp`. The crank turns around its shaft as the blank sheet feeds toward the archive. The newest actual essay remains a normal HTML link on that sheet. Particles derive from the original ink. Reduced motion and offscreen/hidden-tab suspension remain required.
 
 Mobile pinboard tiles stay compact: three columns, four from 430px. The desktop controls are also available above the mobile grid. Draw immediately reveals one random item, Shuffle rearranges the grid, and Organize groups all notes by their real Notion category order. Notes expand into the full grid width and unfold their readable text beneath the image. Keyboard activation and live control feedback are supported.

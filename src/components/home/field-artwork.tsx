@@ -1,11 +1,9 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export function FieldArtwork() {
   const root = useRef<HTMLDivElement>(null);
-  const [paused, setPaused] = useState(false);
-  const pause = useRef(false);
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -14,7 +12,6 @@ export function FieldArtwork() {
     let disposed = false;
     let trigger: { progress: number; kill(): void } | null = null;
     const apply = (progress: number) => {
-      if (pause.current) return;
       const p = preference.matches ? 0 : progress;
       const smooth = (value: number) => { const t = Math.max(0, Math.min(1, value)); return t * t * (3 - 2 * t); };
       const ink = smooth((p - .12) / .3);
@@ -41,8 +38,7 @@ export function FieldArtwork() {
       update();
     });
     preference.addEventListener("change", update);
-    el.addEventListener("field-motion-change", update);
-    return () => { disposed = true; trigger?.kill(); preference.removeEventListener("change", update); el.removeEventListener("field-motion-change", update); };
+    return () => { disposed = true; trigger?.kill(); preference.removeEventListener("change", update); };
   }, []);
   return <div className="finished-field" ref={root}>
     <div className="finished-field-sticky">
@@ -54,7 +50,7 @@ export function FieldArtwork() {
           <h1><span className="field-name-solid">Monty<span className="field-name-break"> </span>Singer.</span></h1>
         </div>
       </div>
-      <div className="finished-field-caption"><p>Founder of Prometheus,<br />an applied AI company.</p><a href="#building">Into the field <span aria-hidden="true">↘</span></a><button aria-pressed={paused} onClick={() => { pause.current = !pause.current; setPaused(pause.current); root.current?.dispatchEvent(new Event("field-motion-change")); }}>{paused ? "Resume motion" : "Pause motion"}</button></div>
+      <div className="finished-field-caption"><p>Founder of Prometheus,<br />an applied AI company.</p><a href="#building">Into the field <span aria-hidden="true">↘</span></a></div>
     </div>
   </div>;
 }

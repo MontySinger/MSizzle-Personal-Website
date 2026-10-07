@@ -1776,7 +1776,6 @@ body.no-motion .pb-card.pb-riffle {
 .field-original { filter: grayscale(1) contrast(1.08); }
 .field-ink { opacity: clamp(0, calc(var(--field-progress) * 2), 1); mix-blend-mode: multiply; }
 .finished-field-caption { padding: 14px var(--finished-gutter); display: flex; justify-content: space-between; gap: 20px; font-size: 11px; line-height: 1.4; background: var(--finished-ground); border-bottom: 1px solid #222; }
-.finished-field-caption button { cursor: pointer; text-decoration: underline; min-height: 32px; }
 .finished-manifesto { display: flex; justify-content: space-between; align-items: end; gap: 40px; padding-block: 56px 48px; }
 .finished-manifesto p { font-size: clamp(26px, 3vw, 48px); line-height: 1.1; letter-spacing: -.035em; }
 .finished-manifesto strong { font-weight: 800; }
@@ -1787,7 +1786,6 @@ body.no-motion .pb-card.pb-riffle {
 .finished-home .structure-section-title { font-size: clamp(68px, 11vw, 164px); margin: 18px 0 22px; line-height: .9; }
 .finished-art { --art-progress: .5; position: relative; margin-bottom: 28px; }
 .finished-art-top, .finished-art-bottom { display: flex; justify-content: space-between; align-items: center; gap: 20px; font-size: 11px; padding-block: 16px; }
-.finished-art-top button { min-height: 44px; text-decoration: underline; cursor: pointer; }
 .finished-art-stage { position: relative; aspect-ratio: 2; }
 .finished-art-stage img, .finished-art-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .finished-press .finished-art-stage { mix-blend-mode: multiply; }
@@ -1836,7 +1834,6 @@ body.no-motion .pb-card.pb-riffle {
   .finished-field { height: auto; }
   .finished-field-sticky { position: relative; top: 0; }
   .field-ink { opacity: 0; }
-  .finished-field-caption button, .finished-art-top button { display: none; }
   .printed-essay { transform: none; }
 }
 .field-original { opacity: clamp(0, calc(1 - var(--field-progress) * 2), 1); }
@@ -1898,7 +1895,6 @@ body.no-motion .pb-card.pb-riffle {
 .field-name-solid { display: block; }
 .finished-field-caption { position: absolute; bottom: 0; left: 0; right: 0; z-index: 2; color: #141414; background: var(--finished-ground); border: 0; align-items: center; font-size: 12px; line-height: 1.4; padding-block: 16px; }
 .finished-field-caption a { min-height: 44px; display: inline-flex; align-items: center; gap: 30px; }
-.finished-field-caption button { min-height: 44px; }
 .finished-press .finished-art-stage { overflow: visible; margin-bottom: 38px; }
 .finished-press-crank, .finished-press-feed { position: absolute; inset: 0; }
 .finished-press-crank { clip-path: inset(0 0 0 72%); transform-origin: 79.4% 27.5%; transform: rotate(calc((var(--art-progress) - .3) * 65deg)); pointer-events: none; }
