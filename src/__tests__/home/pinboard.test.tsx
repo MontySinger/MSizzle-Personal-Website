@@ -36,6 +36,14 @@ const ITEMS: LoveItem[] = [
   make({ id: "m1", type: "Movie", title: "Fight Club", subtitle: "Fincher", cover: "https://notion.so/p.jpg" }),
 ];
 
+function mobileViewport() {
+  vi.stubGlobal("matchMedia", vi.fn((query: string) => ({
+    matches: query === "(max-width: 760px)", media: query, onchange: null,
+    addListener: vi.fn(), removeListener: vi.fn(), addEventListener: vi.fn(),
+    removeEventListener: vi.fn(), dispatchEvent: vi.fn(),
+  })));
+}
+
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
@@ -43,6 +51,51 @@ afterEach(() => {
 });
 
 describe("Pinboard (sketch 012)", () => {
+  it("mobile Draw can reveal a card beyond the initial twelve and return to the grid", () => {
+    mobileViewport();
+    vi.spyOn(Math, "random").mockReturnValue(.999);
+    const items = Array.from({ length: 14 }, (_, i) => make({ id: String(i), type: "Thing", title: `Note ${i}`, note: "Why I love this." }));
+    const { container } = render(<Pinboard items={items} />);
+    fireEvent.click(screen.getByRole("button", { name: "Draw a card" }));
+    expect(container.querySelector(".pinboard")?.classList.contains("is-mobile-drawn")).toBe(true);
+    const selected = screen.getByRole("button", { name: "Note 13" });
+    expect(selected.getAttribute("aria-expanded")).toBe("true");
+    expect(selected.classList.contains("pb-drawn")).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Back to board" }));
+    expect(container.querySelector(".pinboard")?.classList.contains("is-mobile-drawn")).toBe(false);
+    expect(container.querySelectorAll(".pb-card").length).toBe(14);
+    expect(container.querySelectorAll(".pb-drawn, .is-open").length).toBe(0);
+  });
+
+  it("mobile Shuffle changes the card order without losing any notes", () => {
+    mobileViewport();
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const { container } = render(<Pinboard items={ITEMS} />);
+    const titles = () => Array.from(container.querySelectorAll(".pb-card")).map(el => el.getAttribute("aria-label"));
+    const before = titles();
+    fireEvent.click(screen.getByRole("button", { name: "Shuffle" }));
+    expect(titles()).not.toEqual(before);
+    expect(titles().sort()).toEqual(before.sort());
+  });
+
+  it("mobile Organize groups all cards in the requested topic order", () => {
+    mobileViewport();
+    const { container } = render(<Pinboard items={ITEMS} categoryOrder={["YouTube", "Place", "Book", "Thing", "Movie"]} />);
+    fireEvent.click(screen.getByRole("button", { name: "Organize by topic" }));
+    expect(Array.from(container.querySelectorAll(".pb-topic")).map(el => el.textContent)).toEqual(["YouTube · 1", "Place · 1", "Book · 1", "Thing · 1", "Movie · 1"]);
+    expect(container.querySelector(".pinboard")?.classList.contains("is-expanded")).toBe(true);
+    expect(container.querySelector(".pinboard-field")?.children[1].getAttribute("aria-label")).toBe("A talk");
+  });
+
+  it("a keyboard user can open and close a note", () => {
+    const { container } = render(<Pinboard items={[ITEMS[0]]} />);
+    const card = container.querySelector(".pb-card")!;
+    fireEvent.keyDown(card, { key: "Enter" });
+    expect(card.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.keyDown(card, { key: " " });
+    expect(card.getAttribute("aria-expanded")).toBe("false");
+  });
+
   it("shows a cached cover that finished loading before hydration", () => {
     vi.spyOn(HTMLImageElement.prototype, "complete", "get").mockReturnValue(true);
     vi.spyOn(HTMLImageElement.prototype, "naturalWidth", "get").mockReturnValue(420);

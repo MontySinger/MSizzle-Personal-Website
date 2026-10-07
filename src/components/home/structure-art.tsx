@@ -20,6 +20,7 @@ export function StructureArt({ kind, essay }: { kind: "systems" | "press"; essay
     if (typeof window.matchMedia !== "function") return;
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     let visible = false, disposed = false, ready = false, request = 0, last = 0, time = 0, progress = 0;
+    let trigger: { progress: number; kill(): void } | null = null;
     let points: { x: number; y: number; r: number; phase: number }[] = [];
     const source = new window.Image();
     function measure() {
@@ -56,8 +57,7 @@ export function StructureArt({ kind, essay }: { kind: "systems" | "press"; essay
     }
     function update() {
       if (pause.current) return;
-      const b = el!.getBoundingClientRect();
-      progress = Math.max(0, Math.min(1, (innerHeight - b.top) / (innerHeight + b.height)));
+      progress = trigger?.progress ?? .5;
       el!.style.setProperty("--art-progress", String(preference.matches ? .5 : progress));
       draw(); schedule();
     }
@@ -71,19 +71,32 @@ export function StructureArt({ kind, essay }: { kind: "systems" | "press"; essay
     const observer = typeof IntersectionObserver === "undefined" ? null : new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; schedule(); });
     observer?.observe(el);
     source.onload = () => { if (!disposed) { ready = true; measure(); update(); } }; source.src = src;
-    addEventListener("scroll", update, { passive: true });
+    if (typeof ResizeObserver !== "undefined") {
+      Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(([{ gsap }, { ScrollTrigger }]) => {
+        if (disposed) return;
+        gsap.registerPlugin(ScrollTrigger);
+        trigger = ScrollTrigger.create({ trigger: el, start: "top bottom", end: "bottom top", onUpdate: update, onRefresh: update });
+        update();
+      });
+    }
     document.addEventListener("visibilitychange", update);
     preference.addEventListener("change", update);
     el.addEventListener("art-motion-change", update);
-    return () => { disposed = true; source.onload = null; observer?.disconnect(); cancelAnimationFrame(request); removeEventListener("scroll", update); document.removeEventListener("visibilitychange", update); preference.removeEventListener("change", update); el.removeEventListener("art-motion-change", update); };
+    return () => { disposed = true; source.onload = null; observer?.disconnect(); trigger?.kill(); cancelAnimationFrame(request); document.removeEventListener("visibilitychange", update); preference.removeEventListener("change", update); el.removeEventListener("art-motion-change", update); };
   }, [press, src]);
   function toggle() { pause.current = !pause.current; setPaused(pause.current); root.current?.dispatchEvent(new Event("art-motion-change")); }
   return <div ref={root} className={`finished-art ${press ? "finished-press" : "finished-systems"}`}>
     <div className="finished-art-top"><span>{press ? "Ideas, put into print." : "Prometheus"}</span><button onClick={toggle} aria-pressed={paused}>{paused ? "Resume motion" : "Pause motion"}</button></div>
     <div className="finished-art-stage">
-      <Image src={src} alt={press ? "Printing press transitioning from rich halftone ink into precise mechanical linework" : "Connected systems transitioning from dimensional halftone spheres into fine construction lines"} fill sizes="(max-width: 767px) 100vw, 1100px" />
+      <Image src={press ? "/artwork/ink-press-base.webp" : src} alt={press ? "Printing press transitioning from rich halftone ink into precise mechanical linework" : "Connected systems transitioning from dimensional halftone spheres into fine construction lines"} fill sizes="(max-width: 767px) 100vw, 1100px" />
       <canvas ref={canvas} aria-hidden="true" />
-      {press && essay && <Link href={essay.href} className="printed-essay"><span>From the archive</span><strong>{essay.title}</strong><span>Read essay ↗</span></Link>}
+      {press && <>
+        <div className="finished-press-crank" aria-hidden="true"><Image src="/artwork/ink-press-moving.webp" alt="" fill sizes="(max-width: 767px) 100vw, 1100px" /></div>
+        <div className="finished-press-feed">
+          <Image src="/artwork/ink-press-moving.webp" alt="" fill sizes="(max-width: 767px) 100vw, 1100px" className="finished-press-paper" aria-hidden="true" />
+          {essay && <Link href={essay.href} className="printed-essay"><span>From the archive</span><strong>{essay.title}</strong><span>Read essay ↗</span></Link>}
+        </div>
+      </>}
     </div>
     {!press && <div className="finished-art-bottom"><span>Applied AI. Connected systems.</span><a href="https://prometheus.today" target="_blank" rel="noopener noreferrer">Explore Prometheus ↗</a></div>}
   </div>;

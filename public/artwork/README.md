@@ -13,3 +13,10 @@ Generate only the approved Prometheus connected sphere artwork, no text, heading
 ## Landscape prompt
 
 Use actual `public/home/tetons.jpg` as edit target, approved board as style reference. Preserve specific man, clothing, stride, right-side position, mountain silhouettes and rocky field. Transform into sharp black and warm-white photographic halftone. Replace empty sky with warm white. Ground and mountains transition from dense photographic ink to sparse dots and delicate contours toward right and bottom. Keep man recognizable and mostly sharp monochrome photographic detail. No new scenery, text, frames, fog, engraving or woodcut. This is an artistic derivative; the original photograph is retained as primary opening and reduced-motion fallback.
+# Scroll story layers
+
+Generated with the built-in imagegen tool from the existing project artwork, saved as WebP with preserved alpha where applicable.
+
+- `field-lines.webp`: edit of `ink-landscape.webp` with the original Teton photograph as identity reference. Preserve exact framing and hiker pose; replace dense halftone with fine near-black terrain contours and technical linework on warm white. No labels, grids, invented scenery, or text.
+- `ink-press-base.webp`: edit of `ink-press.webp`, preserving exact canvas and machinery. Remove only the blank paper and right-hand crank; expose the lower roller and preserve the transparent background.
+- `ink-press-moving.webp`: edit of `ink-press.webp`, retaining only the original blank opaque white sheet and the right-hand crank at their original coordinates. Everything else is transparent. CSS masks and transforms move the two parts independently; essay text stays accessible HTML.

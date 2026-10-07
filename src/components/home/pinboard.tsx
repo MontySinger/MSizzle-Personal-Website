@@ -26,10 +26,9 @@ import type { LoveItem } from "@/lib/notion-loves";
  * The draw/shuffle state (current phase, riffle pointer/timer) is likewise
  * kept in plain closures, not React state, for the same reason.
  *
- * Below 760px it degrades to a tidy, tappable, non-draggable grid (CSS); the
- * draw/shuffle toolbar is hidden there too, since "gather to a center deck"
- * has no meaning once cards are a static grid (tap-to-reveal already
- * covers the same "why I love this" payoff on mobile).
+ * Below 760px it becomes a compact, tappable grid. Mobile Draw opens one
+ * random card immediately; Shuffle reorders the grid and Organize groups it
+ * under topic headings. Desktop keeps the scattered, draggable board.
  * Every card's link stays reachable via the note panel, so the board is usable
  * without dragging (keyboard + reduced-motion friendly). Under
  * prefers-reduced-motion, scatter/gather/riffle skip their transitions and
@@ -309,6 +308,10 @@ export function Pinboard({
     const cards = Array.from(board.querySelectorAll<HTMLElement>(".pb-card"));
     let ztop = cards.length + 10;
     const cleanups: Array<() => void> = [];
+    const openCard = (el: HTMLElement, open: boolean) => {
+      el.classList.toggle("is-open", open);
+      el.setAttribute("aria-expanded", String(open));
+    };
 
     cards.forEach((el) => {
       let sx = 0, sy = 0, ox = 0, oy = 0, moved = false, pid: number | null = null;
@@ -350,7 +353,7 @@ export function Pinboard({
         const wasDrag = moved;
         finish();
         if (!wasDrag) {
-          el.classList.toggle("is-open");
+          openCard(el, !el.classList.contains("is-open"));
           el.style.zIndex = String(++ztop);
         }
       };
@@ -358,14 +361,19 @@ export function Pinboard({
         if (!isMobile()) return;
         if ((e.target as HTMLElement).closest(".pb-open")) return;
         if ((e.target as HTMLElement).closest(".pb-close")) {
-          el.classList.remove("is-open");
+          openCard(el, false);
           return;
         }
-        el.classList.toggle("is-open");
+        openCard(el, !el.classList.contains("is-open"));
+      };
+      const onKey = (e: KeyboardEvent) => {
+        if (e.target !== el || (e.key !== "Enter" && e.key !== " ")) return;
+        e.preventDefault();
+        openCard(el, !el.classList.contains("is-open"));
       };
       const onCloseDown = (e: Event) => {
         e.stopPropagation();
-        el.classList.remove("is-open");
+        openCard(el, false);
       };
 
       el.addEventListener("pointerdown", onDown);
@@ -373,6 +381,7 @@ export function Pinboard({
       el.addEventListener("pointerup", onUp);
       el.addEventListener("pointercancel", finish);
       el.addEventListener("click", onClick);
+      el.addEventListener("keydown", onKey);
       const closeBtn = el.querySelector(".pb-close");
       closeBtn?.addEventListener("pointerdown", onCloseDown);
 
@@ -382,6 +391,7 @@ export function Pinboard({
         el.removeEventListener("pointerup", onUp);
         el.removeEventListener("pointercancel", finish);
         el.removeEventListener("click", onClick);
+        el.removeEventListener("keydown", onKey);
         closeBtn?.removeEventListener("pointerdown", onCloseDown);
       });
     });
@@ -399,8 +409,8 @@ export function Pinboard({
     // --- Draw a card / Shuffle (sketch 013) --------------------------------
     // Kept as plain closures over the same imperative style as the drag
     // wiring above: no React state, so re-renders never clobber mid-riffle
-    // DOM state. All of it is a no-op on mobile, where the toolbar is
-    // CSS-hidden and cards are a static list.
+    // DOM state. Mobile controls share the same handlers with grid-specific
+    // placement and immediate selection instead of a gathered deck.
     const toolbar = board.querySelector<HTMLElement>(".pb-tools");
     const btnDraw = toolbar?.querySelector<HTMLButtonElement>('[data-pb="draw"]') ?? null;
     const btnShuffle = toolbar?.querySelector<HTMLButtonElement>('[data-pb="shuffle"]') ?? null;
@@ -468,6 +478,7 @@ export function Pinboard({
       });
       const clearCardState = (el: HTMLElement) => {
         el.classList.remove("pb-dim", "pb-peek", "pb-drawn", "pb-riffle", "pb-anim", "is-open");
+        el.setAttribute("aria-expanded", "false");
       };
 
       const setButtons = (state: Phase) => {
@@ -499,6 +510,27 @@ export function Pinboard({
       // cards over the whole board instead of stacking them.
       const scatter = () => {
         clearTopics();
+        board.classList.remove("is-mobile-drawn");
+        if (isMobile()) {
+          board.classList.remove("is-expanded");
+          const shuffled = [...cards];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
+          shuffled.forEach((el, i) => {
+            clearCardState(el);
+            el.style.setProperty("--pb-deal-delay", `${Math.min(i, MOBILE_LIMIT) * 12}ms`);
+            field.appendChild(el);
+          });
+          if (!reduceMotion()) {
+            board.classList.remove("is-dealing");
+            void board.offsetWidth;
+            board.classList.add("is-dealing");
+          }
+          statusEl.textContent = "Shuffled.";
+          return;
+        }
         const { w, h } = fieldSize();
         const animate = !reduceMotion();
 
@@ -542,8 +574,22 @@ export function Pinboard({
       };
 
       const startDraw = () => {
-        if (isMobile() || phase === "drawing") return;
+        if (phase === "drawing") return;
         clearTopics();
+        if (isMobile()) {
+          board.classList.remove("is-dealing");
+          cards.forEach(clearCardState);
+          ptr = Math.floor(Math.random() * cards.length);
+          const selected = cards[ptr];
+          selected.classList.add("pb-drawn");
+          openCard(selected, true);
+          board.classList.add("is-mobile-drawn");
+          setButtons("revealed");
+          statusEl.textContent = "Your card:";
+          selected.focus({ preventScroll: true });
+          board.scrollIntoView?.({ block: "start", behavior: "auto" });
+          return;
+        }
         const { w, h } = fieldSize();
         setButtons("drawing");
         statusEl.textContent = "Riffling…";
@@ -629,7 +675,7 @@ export function Pinboard({
           0,
           fitScale(el, w, h, REVEAL_FRAC)
         );
-        window.setTimeout(() => el.classList.add("is-open"), animate ? 280 : 0);
+        window.setTimeout(() => openCard(el, true), animate ? 280 : 0);
         setButtons("revealed");
         statusEl.textContent = "Your card:";
       };
@@ -656,7 +702,7 @@ export function Pinboard({
       };
 
       const organize = () => {
-        if (isMobile() || phase === "drawing") return;
+        if (phase === "drawing") return;
         clearTopics();
         setButtons("board");
         const animate = !reduceMotion();
@@ -672,6 +718,21 @@ export function Pinboard({
           if (ra !== rb) return ra - rb;
           return a[0].localeCompare(b[0]);
         });
+
+        if (isMobile()) {
+          board.classList.remove("is-mobile-drawn", "is-dealing");
+          board.classList.add("is-expanded");
+          ordered.forEach(([name, els]) => {
+            const label = document.createElement("div");
+            label.className = "pb-topic pb-topic-mobile";
+            label.textContent = `${name} · ${els.length}`;
+            field.appendChild(label);
+            topicLabels.push(label);
+            els.forEach((el) => { clearCardState(el); field.appendChild(el); });
+          });
+          statusEl.textContent = "Organized by topic.";
+          return;
+        }
 
         const { w } = fieldSize();
         const LABEL_H = 30; // space above each band for its heading
@@ -764,14 +825,13 @@ export function Pinboard({
       const onDrawClick = () => startDraw();
       const onOrganizeClick = () => organize();
       const onShuffleClick = () => {
-        if (isMobile() || phase === "drawing") return;
+        if (phase === "drawing") return;
         setButtons("board");
         scatter();
       };
       const onStopClick = () => stopDraw();
       const onAgainClick = () => startDraw();
       const onBackClick = () => {
-        if (isMobile()) return;
         setButtons("board");
         scatter();
       };
@@ -786,6 +846,8 @@ export function Pinboard({
       cleanups.push(() => {
         if (riffleTimer !== null) window.clearTimeout(riffleTimer);
         topicLabels.forEach((l) => l.remove());
+        // Restore React's original child order before this effect is rewired.
+        cards.forEach((el) => field.appendChild(el));
         btnDraw.removeEventListener("click", onDrawClick);
         btnOrganize.removeEventListener("click", onOrganizeClick);
         btnShuffle.removeEventListener("click", onShuffleClick);
@@ -822,7 +884,7 @@ export function Pinboard({
         <button type="button" className="pb-btn" data-pb="back" hidden>
           Back to board
         </button>
-        <span className="pb-status" data-pb="status" />
+        <span className="pb-status" data-pb="status" role="status" aria-live="polite" />
       </div>
       <div className="pinboard-field">
         {items.map((item, i) => {
@@ -835,6 +897,10 @@ export function Pinboard({
               data-x={x}
               data-y={y}
               data-r={r}
+              tabIndex={0}
+              role="button"
+              aria-label={item.title}
+              aria-expanded={false}
               style={
                 {
                   transform: `translate(${x}px, ${y}px) rotate(${r}deg)`,
