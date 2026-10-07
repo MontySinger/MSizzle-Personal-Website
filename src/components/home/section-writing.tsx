@@ -1,3 +1,4 @@
+import { StructureArt } from "./structure-art";
 import Link from "next/link";
 import type { BlogPost } from "@/lib/notion";
 import { writingRows, formatYYYYMM } from "@/lib/homepage-rows";
@@ -46,6 +47,8 @@ export function SectionWriting({
       <h2 className="reveal font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
         02 · Writing
       </h2>
+      <div className="structure-section-title" aria-hidden="true">Writing.</div>
+      <StructureArt kind="press" />
       <div className="e-term reveal">
         <div className="hd">~/writing</div>
         {rows.length === 0 ? (

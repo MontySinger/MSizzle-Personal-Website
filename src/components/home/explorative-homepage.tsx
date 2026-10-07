@@ -1,4 +1,4 @@
-import { Hero } from "./hero";
+import { StructureHero } from "./structure-hero";
 import { ScrollReveals } from "./scroll-reveals";
 import { SectionBuilding } from "./section-building";
 import { SectionWriting } from "./section-writing";
@@ -55,11 +55,11 @@ export function ExplorativeHomepage({
     homepageAccentOffsets(projects, posts);
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div className="homepage structure-home min-h-screen bg-bg">
       {/* Fixed islands: mounted first so they overlay all bands */}
       <ScrollReveals />
 
-      <Hero />
+      <StructureHero />
 
       <SectionBuilding projects={projects} accentStart={buildingAccentStart} />
 

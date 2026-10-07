@@ -1,3 +1,4 @@
+import { StructureArt } from "./structure-art";
 import Link from "next/link";
 import type { Project } from "@/lib/notion-projects";
 import { buildingRows } from "@/lib/homepage-rows";
@@ -36,6 +37,8 @@ export function SectionBuilding({
       <h2 className="reveal font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
         01 · Building
       </h2>
+      <div className="structure-section-title" aria-hidden="true">Building.</div>
+      <StructureArt kind="systems" />
       {rows.map((row, i) => {
         const children = (
           <>
