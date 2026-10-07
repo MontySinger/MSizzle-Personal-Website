@@ -1,5 +1,5 @@
 import React from "react";
-import { describe, it, expect, afterEach } from "vitest";
+import { describe, it, expect, afterEach, vi } from "vitest";
 import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import { Pinboard } from "@/components/home/pinboard";
 import type { LoveItem } from "@/lib/notion-loves";
@@ -36,9 +36,37 @@ const ITEMS: LoveItem[] = [
   make({ id: "m1", type: "Movie", title: "Fight Club", subtitle: "Fincher", cover: "https://notion.so/p.jpg" }),
 ];
 
-afterEach(() => cleanup());
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+});
 
 describe("Pinboard (sketch 012)", () => {
+  it("opens a mobile note once per tap and closes it with the close button", () => {
+    vi.stubGlobal("matchMedia", vi.fn((query: string) => ({
+      matches: query === "(max-width: 760px)",
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })));
+    const { container } = render(<Pinboard items={[ITEMS[0]]} />);
+    const card = container.querySelector(".pb-card")!;
+    fireEvent.pointerDown(card);
+    fireEvent.pointerUp(card);
+    fireEvent.click(card);
+    expect(card.classList.contains("is-open")).toBe(true);
+    const close = screen.getByRole("button", { name: "Close" });
+    fireEvent.pointerDown(close);
+    fireEvent.pointerUp(close);
+    fireEvent.click(close);
+    expect(card.classList.contains("is-open")).toBe(false);
+  });
+
   it("renders one card per item", () => {
     const { container } = render(<Pinboard items={ITEMS} />);
     expect(container.querySelectorAll(".pb-card").length).toBe(ITEMS.length);

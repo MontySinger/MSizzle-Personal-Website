@@ -26,9 +26,9 @@ import type { LoveItem } from "@/lib/notion-loves";
  * The draw/shuffle state (current phase, riffle pointer/timer) is likewise
  * kept in plain closures, not React state, for the same reason.
  *
- * Below 760px it degrades to a tidy, tappable, non-draggable stack (CSS); the
+ * Below 760px it degrades to a tidy, tappable, non-draggable grid (CSS); the
  * draw/shuffle toolbar is hidden there too, since "gather to a center deck"
- * has no meaning once cards are a static vertical list (tap-to-reveal already
+ * has no meaning once cards are a static grid (tap-to-reveal already
  * covers the same "why I love this" payoff on mobile).
  * Every card's link stays reachable via the note panel, so the board is usable
  * without dragging (keyboard + reduced-motion friendly). Under
@@ -42,7 +42,7 @@ const CARD_MAX_W = 260; // widest card, kept off the right edge
 const CARD_MAX_H = 300; // tallest card, kept off the bottom edge
 const ROW_H = 300; // ideal vertical step when the board isn't capped
 const BOARD_MAX_H = 720; // hard cap: the board never grows past this (fixed area)
-const MOBILE_LIMIT = 5; // cards shown before "See more" on the mobile stack
+const MOBILE_LIMIT = 12; // cards shown before "See more" on the mobile grid
 const ROWS = 3; // cards start spread across three horizontal lines
 const THREE_LINE_MIN_H = 660; // board floor so the three start lines get real vertical gaps
 // The toolbar strip the card field sits below (`--pb-tools-h` in globals.css).
@@ -342,6 +342,7 @@ export function Pinboard({
         el.classList.remove("is-dragging");
       };
       const onUp = () => {
+        if (pid === null) return;
         const wasDrag = moved;
         finish();
         if (!wasDrag) {
@@ -382,7 +383,7 @@ export function Pinboard({
     });
 
     // --- Mobile "See more" -------------------------------------------------
-    // On the mobile stack (CSS media query) cards past MOBILE_LIMIT are hidden
+    // On the mobile grid (CSS media query) cards past MOBILE_LIMIT are hidden
     // until this reveals them. Purely a class toggle, no React state, so it
     // never clobbers the imperative card transforms. No-op on desktop, where
     // the button is CSS-hidden and the field is the full scatter.
