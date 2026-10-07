@@ -23,8 +23,6 @@ export function FieldArtwork() {
       el.style.setProperty("--field-ink-opacity", String(ink));
       el.style.setProperty("--field-lines-opacity", String(lines));
       el.style.setProperty("--field-photo-opacity", String(1 - ink));
-      el.style.setProperty("--field-title-fill", String(1 - lines));
-      el.style.setProperty("--field-title-outline", String(lines));
       const shade = Math.round(245 * (1 - ink) + 20 * ink);
       el.style.setProperty("--field-text", `rgb(${shade} ${shade} ${shade})`);
     };
@@ -53,7 +51,7 @@ export function FieldArtwork() {
         <Image src="/artwork/ink-landscape.webp" alt="" fill sizes="(max-width: 767px) 180vh, 100vw" className="field-ink" aria-hidden="true" />
         <Image src="/artwork/field-lines.webp" alt="" fill sizes="(max-width: 767px) 180vh, 100vw" className="field-lines" aria-hidden="true" />
         <div className="field-intro">
-          <h1><span className="field-name-solid">Monty<span className="field-name-break"> </span>Singer.</span><span className="field-name-outline" aria-hidden="true">Monty<span className="field-name-break"> </span>Singer.</span></h1>
+          <h1><span className="field-name-solid">Monty<span className="field-name-break"> </span>Singer.</span></h1>
         </div>
       </div>
       <div className="finished-field-caption"><p>Founder of Prometheus,<br />an applied AI company.</p><a href="#building">Into the field <span aria-hidden="true">↘</span></a><button aria-pressed={paused} onClick={() => { pause.current = !pause.current; setPaused(pause.current); root.current?.dispatchEvent(new Event("field-motion-change")); }}>{paused ? "Resume motion" : "Pause motion"}</button></div>
