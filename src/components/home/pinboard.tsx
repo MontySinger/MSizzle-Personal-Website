@@ -171,6 +171,10 @@ function CardFace({ item }: { item: LoveItem }) {
       // Plain img on purpose: external YouTube host + same-origin proxy, decorative,
       // below the fold. eslint-disable-next-line @next/next/no-img-element
       <img
+        ref={(image) => {
+          // Cached covers can finish loading before React attaches onLoad.
+          if (image?.complete && image.naturalWidth > 0) setLoaded(true);
+        }}
         className="pb-img"
         src={src}
         alt=""

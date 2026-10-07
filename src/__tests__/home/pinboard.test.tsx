@@ -43,6 +43,13 @@ afterEach(() => {
 });
 
 describe("Pinboard (sketch 012)", () => {
+  it("shows a cached cover that finished loading before hydration", () => {
+    vi.spyOn(HTMLImageElement.prototype, "complete", "get").mockReturnValue(true);
+    vi.spyOn(HTMLImageElement.prototype, "naturalWidth", "get").mockReturnValue(420);
+    const { container } = render(<Pinboard items={[ITEMS[0]]} />);
+    expect((container.querySelector("img") as HTMLImageElement).style.opacity).toBe("1");
+  });
+
   it("opens a mobile note once per tap and closes it with the close button", () => {
     vi.stubGlobal("matchMedia", vi.fn((query: string) => ({
       matches: query === "(max-width: 760px)",
