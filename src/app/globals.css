@@ -1845,29 +1845,30 @@ body.no-motion .pb-card.pb-riffle {
 /* Compact mobile pinboard: browse many notes, tap one for the full detail. */
 @media (max-width: 760px) {
   .finished-home #loves { padding-top: 64px; }
-  .pinboard { padding-inline: 18px; margin-top: 24px; }
-  .pinboard-field { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; align-items: start; }
+  .pinboard { padding-inline: 14px; margin-top: 20px; }
+  .pinboard-field { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 10px; align-items: start; }
   .pb-card { min-width: 0; width: 100%; transform: rotate(calc(var(--pb-r, -2deg) * .2)) !important; }
-  .pb-card .pb-frame { width: 100%; border-width: 1px; box-shadow: 3px 3px 0 var(--color-text); }
-  .pb-card:hover .pb-frame { box-shadow: 4px 4px 0 var(--color-text); }
-  .pb-card--place .pb-frame { padding: 6px 6px 0; }
-  .pb-media--place { width: 100%; height: 90px; aspect-ratio: auto; }
-  .pb-media--yt { height: 90px; }
-  .pb-media--book { height: 165px; }
+  .pb-card .pb-frame { width: 100%; border-width: 1px; box-shadow: 2px 2px 0 var(--color-text); }
+  .pb-card:hover .pb-frame { box-shadow: 3px 3px 0 var(--color-text); }
+  .pb-card--place .pb-frame { padding: 4px 4px 0; }
+  .pb-media--place { width: 100%; height: 62px; aspect-ratio: auto; }
+  .pb-media--yt { height: 62px; }
+  .pb-media--book { height: 115px; }
   .pb-media--thing { min-height: 0; }
-  .pb-card--thing .pb-img { height: 105px; max-height: 105px; object-fit: cover; }
-  .pb-card--thing .pb-swatch { height: 80px; }
-  .pb-tag { font-size: 8px; left: 5px; top: 5px; padding: 2px 4px; }
-  .pb-cap { padding: 8px 2px; font-size: 12px; }
-  .pb-meta, .pb-body { padding: 8px; }
-  .pb-meta .pb-t, .pb-body .pb-t { font-size: 12px; line-height: 1.2; }
-  .pb-meta .pb-t, .pb-body .pb-t, .pb-book-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+  .pb-card--thing .pb-img { height: 70px; max-height: 70px; object-fit: cover; }
+  .pb-card--thing .pb-swatch { height: 62px; }
+  .pb-tag { font-size: 7px; left: 4px; top: 4px; padding: 2px 3px; }
+  .pb-cap { padding: 6px 2px; font-size: 10px; }
+  .pb-meta, .pb-body { padding: 6px; }
+  .pb-meta .pb-t, .pb-body .pb-t { font-size: 10px; line-height: 1.2; }
+  .pb-meta .pb-t, .pb-body .pb-t, .pb-book-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+  .pb-card:not(.is-open) .pb-c, .pb-card:not(.is-open) .pb-s, .pb-card:not(.is-open) .pb-book-author { display: none; }
   .pb-meta .pb-c, .pb-body .pb-s { font-size: 10px; line-height: 1.3; }
-  .pb-book-caption { padding: 8px; }
-  .pb-book-title { font-size: 13px; line-height: 1.1; }
+  .pb-book-caption { padding: 6px; }
+  .pb-book-title { font-size: 10px; line-height: 1.1; }
   .pb-book-author { font-size: 10px; }
-  .pb-foot { padding: 6px 8px; border-top-width: 1px; }
-  .pb-play > span { width: 36px; height: 28px; }
+  .pb-foot { padding: 4px 6px; border-top-width: 1px; }
+  .pb-play > span { width: 28px; height: 22px; }
   .pinboard:not(.is-expanded) .pinboard-field .pb-card:nth-child(n + 6) { display: block; }
   .pinboard:not(.is-expanded) .pinboard-field .pb-card:nth-child(n + 13) { display: none; }
   .pb-card.is-open { grid-column: 1 / -1; transform: none !important; }
@@ -1875,7 +1876,11 @@ body.no-motion .pb-card.pb-riffle {
   .pb-card.is-open .pb-note { max-height: 100%; overflow-y: auto; padding: 16px; font-size: 14px; line-height: 1.45; }
   .pb-card.is-open .pb-close { min-width: 44px; min-height: 44px; }
   .pb-card.is-open .pb-open { min-height: 44px; display: inline-flex; align-items: center; }
-  .pb-card.is-open .pb-t, .pb-card.is-open .pb-book-title { -webkit-line-clamp: unset; }
+  .pb-card.is-open .pb-t, .pb-card.is-open .pb-book-title { -webkit-line-clamp: unset; font-size: 14px; }
+  .pb-card.is-open .pb-cap { font-size: 14px; }
   .pb-card.is-open .pb-media--place, .pb-card.is-open .pb-media--yt { height: 160px; }
   .pb-card--thing.is-open .pb-img { height: auto; max-height: 200px; object-fit: contain; }
+}
+@media (min-width: 430px) and (max-width: 760px) {
+  .pinboard-field { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
