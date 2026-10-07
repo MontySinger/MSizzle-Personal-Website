@@ -62,7 +62,7 @@ describe("SectionWriting", () => {
       post({ slug: "p2", title: "No date", date: "" }),
     ];
     render(React.createElement(SectionWriting, { posts }));
-    expect(screen.getByText("Has date")).toBeDefined();
+    expect(screen.getByText("Has date", { selector: ".e-post span" })).toBeDefined();
     expect(screen.queryByText("No date")).toBeNull();
     expect(document.body.textContent).not.toContain("Invalid Date");
   });
@@ -133,7 +133,7 @@ describe("SectionWriting", () => {
       post({ slug: "my-post", title: "My post", date: "2026-07-15T00:00:00.000Z" }),
     ];
     render(React.createElement(SectionWriting, { posts }));
-    const link = screen.getByText("My post").closest("a");
+    const link = screen.getByText("My post", { selector: ".e-post span" }).closest("a");
     expect(link?.getAttribute("href")).toBe("/blog/my-post");
     expect(link?.getAttribute("target")).toBeNull();
     expect(link?.getAttribute("rel")).toBeNull();

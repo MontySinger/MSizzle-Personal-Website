@@ -48,7 +48,7 @@ export function SectionWriting({
         02 · Writing
       </h2>
       <div className="structure-section-title" aria-hidden="true">Writing.</div>
-      <StructureArt kind="press" />
+      <StructureArt kind="press" essay={rows[0] ? { title: rows[0].title, href: rows[0].href } : undefined} />
       <div className="e-term reveal">
         <div className="hd">~/writing</div>
         {rows.length === 0 ? (

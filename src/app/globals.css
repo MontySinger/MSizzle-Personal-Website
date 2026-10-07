@@ -1759,3 +1759,85 @@ body.no-motion .pb-card.pb-riffle {
 }
 .structure-intro, .structure-portrait .portrait-photo-switch, .structure-portrait .portrait-caption { mix-blend-mode: normal; color: var(--portrait-ink, white); }
 .structure-intro { text-shadow: 0 1px 12px #0002; }
+
+/* Finished editorial compositions. Assets carry detail; HTML carries content. */
+.finished-home { --finished-gutter: clamp(22px, 4.4vw, 76px); --finished-ground: #f1efe5; background: var(--finished-ground); }
+.finished-hero-intro, .finished-manifesto { max-width: 1600px; margin-inline: auto; padding-inline: var(--finished-gutter); }
+.finished-hero-intro { padding-top: 38px; padding-bottom: 26px; }
+.finished-hero-label { display: flex; justify-content: space-between; font-size: 11px; border-top: 1px solid #222; padding-top: 16px; }
+.finished-hero-label > span:first-child { text-transform: uppercase; letter-spacing: .12em; }
+.finished-hero h1 { font-size: clamp(84px, 14.2vw, 224px); font-weight: 800; line-height: .91; letter-spacing: -.06em; padding-block: 28px 22px; }
+.finished-hero-description { display: flex; justify-content: space-between; align-items: end; gap: 24px; font-size: 13px; line-height: 1.5; }
+.finished-hero-description a { min-height: 44px; display: flex; align-items: center; gap: 44px; }
+.finished-field { --field-progress: 0; height: 165svh; position: relative; }
+.finished-field-sticky { position: sticky; top: 64px; height: calc(100svh - 64px); display: flex; flex-direction: column; }
+.finished-field-image { position: relative; flex: 1; overflow: hidden; background: var(--finished-ground); }
+.finished-field-image img { object-fit: cover; object-position: 80% 55%; }
+.field-original { filter: grayscale(1) contrast(1.08); }
+.field-ink { opacity: clamp(0, calc(var(--field-progress) * 2), 1); mix-blend-mode: multiply; }
+.finished-field-caption { padding: 14px var(--finished-gutter); display: flex; justify-content: space-between; gap: 20px; font-size: 11px; line-height: 1.4; background: var(--finished-ground); border-bottom: 1px solid #222; }
+.finished-field-caption button { cursor: pointer; text-decoration: underline; min-height: 32px; }
+.finished-manifesto { display: flex; justify-content: space-between; align-items: end; gap: 40px; padding-block: 56px 48px; }
+.finished-manifesto p { font-size: clamp(26px, 3vw, 48px); line-height: 1.1; letter-spacing: -.035em; }
+.finished-manifesto strong { font-weight: 800; }
+.finished-manifesto > div { max-width: 35ch; font-size: 13px; line-height: 1.7; }
+.finished-manifesto a { text-decoration: underline; }
+.finished-home #building, .finished-home #writing { max-width: 1600px; padding-inline: var(--finished-gutter); padding-top: 52px; }
+.finished-home .a-sec > h2 { margin: 0 0 12px; border-top: 1px solid #222; padding-top: 18px; }
+.finished-home .structure-section-title { font-size: clamp(68px, 11vw, 164px); margin: 18px 0 22px; line-height: .9; }
+.finished-art { --art-progress: .5; position: relative; margin-bottom: 28px; }
+.finished-art-top, .finished-art-bottom { display: flex; justify-content: space-between; align-items: center; gap: 20px; font-size: 11px; padding-block: 16px; }
+.finished-art-top button { min-height: 44px; text-decoration: underline; cursor: pointer; }
+.finished-art-stage { position: relative; aspect-ratio: 2; }
+.finished-art-stage img, .finished-art-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.finished-press .finished-art-stage { mix-blend-mode: multiply; }
+.finished-systems { background: #141414; color: #f1efe5; padding: 0 26px; }
+.finished-systems .finished-art-top > span { font-size: clamp(22px, 3vw, 44px); font-weight: 700; letter-spacing: -.035em; }
+.finished-systems .finished-art-stage { aspect-ratio: 3; }
+.finished-systems .finished-art-bottom { border-top: 1px solid #ffffff40; padding-block: 20px; }
+.finished-press .finished-art-top { border-top: 1px solid #222; }
+.printed-essay { position: absolute; z-index: 2; left: 28%; top: 48%; width: 29%; height: 36%; display: flex; flex-direction: column; justify-content: center; gap: 10px; transform: rotate(.8deg) translateY(calc(var(--art-progress) * 4px)); color: #111; }
+.printed-essay > span { font-size: clamp(9px, .85vw, 12px); }
+.printed-essay > span:first-child { text-transform: uppercase; letter-spacing: .08em; }
+.printed-essay strong { font-size: clamp(14px, 2.2vw, 32px); font-weight: 700; line-height: 1.04; letter-spacing: -.025em; }
+.printed-essay:hover strong { text-decoration: underline; }
+.finished-home .e-term { font-family: var(--font-hanken), sans-serif; }
+.finished-home .e-term .hd { font-family: var(--font-mono); margin-bottom: 0; }
+.finished-home .e-post { padding: 24px 8px; font-size: clamp(19px, 2.4vw, 32px); font-weight: 700; line-height: 1.2; grid-template-columns: 110px 1fr 70px; gap: 24px; }
+.finished-home .e-post .dt, .finished-home .e-post .rd { font-family: var(--font-mono); font-size: 11px; font-weight: 400; letter-spacing: .02em; }
+.finished-home .e-post:last-of-type { border-bottom: 1px solid var(--color-border); }
+.finished-home .a-row .ttl { font-weight: 700; font-size: clamp(26px, 3vw, 44px); }
+@media (max-width: 767px) {
+  .finished-hero-intro { padding-top: 22px; }
+  .finished-hero h1 { max-width: 6ch; font-size: clamp(80px, 23vw, 145px); padding-top: 32px; }
+  .finished-hero-description { font-size: 12px; }
+  .finished-field { height: 130svh; }
+  .finished-field-sticky { height: 76svh; }
+  .finished-field-image img { object-position: 85% center; }
+  .finished-field-caption { font-size: 9px; gap: 10px; align-items: center; }
+  .finished-field-caption > span:first-child { max-width: 12ch; }
+  .finished-manifesto { display: block; padding-block: 36px 24px; }
+  .finished-manifesto > div { margin-top: 24px; }
+  .finished-home #building, .finished-home #writing { padding-top: 40px; }
+  .finished-systems { margin-inline: calc(-1 * var(--finished-gutter)); padding-inline: var(--finished-gutter); }
+  .finished-systems .finished-art-stage { aspect-ratio: 2; overflow: hidden; }
+  .finished-systems .finished-art-stage img, .finished-systems .finished-art-stage canvas { width: 145%; max-width: none; left: -22%; }
+  .finished-art-top, .finished-art-bottom { font-size: 10px; }
+  .finished-press .finished-art-stage { width: calc(100% + 32px); margin-left: -16px; }
+  .printed-essay { gap: 4px; }
+  .printed-essay > span:first-child { display: none; }
+  .printed-essay strong { font-size: clamp(11px, 3.1vw, 18px); }
+  .printed-essay > span { font-size: 8px; }
+  .finished-home .e-post { grid-template-columns: 1fr 55px; gap: 8px 16px; font-size: 23px; padding-block: 22px; }
+  .finished-home .e-post .dt { grid-column: 1 / -1; }
+  .finished-home .e-post .rd { text-align: right; align-self: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .finished-field { height: auto; }
+  .finished-field-sticky { position: relative; top: 0; }
+  .field-ink { opacity: 0; }
+  .finished-field-caption button, .finished-art-top button { display: none; }
+  .printed-essay { transform: none; }
+}
+.field-original { opacity: clamp(0, calc(1 - var(--field-progress) * 2), 1); }
+@media (prefers-reduced-motion: reduce) { .field-original { opacity: 1; } }

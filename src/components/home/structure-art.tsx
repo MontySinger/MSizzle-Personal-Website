@@ -1,65 +1,90 @@
 "use client";
-import { useEffect, useId, useRef, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
-/** Native scroll drives the mechanism. Ambient drift runs only while visible. */
-export function StructureArt({ kind }: { kind: "systems" | "press" }) {
+/** Finished artwork remains visible without JS; particles derive from its ink. */
+export function StructureArt({ kind, essay }: { kind: "systems" | "press"; essay?: { title: string; href: string } }) {
   const root = useRef<HTMLDivElement>(null);
-  const id = useId().replace(/:/g, "");
+  const canvas = useRef<HTMLCanvasElement>(null);
   const [paused, setPaused] = useState(false);
+  const pause = useRef(false);
+  const press = kind === "press";
+  const src = `/artwork/ink-${press ? "press" : "systems"}.webp`;
   useEffect(() => {
     const el = root.current;
-    if (!el) return;
-    let request = 0;
-    const update = () => {
+    const surface = canvas.current;
+    if (!el || !surface) return;
+    const ctx = surface.getContext("2d");
+    if (!ctx) return;
+    if (typeof window.matchMedia !== "function") return;
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let visible = false, disposed = false, ready = false, request = 0, last = 0, time = 0, progress = 0;
+    let points: { x: number; y: number; r: number; phase: number }[] = [];
+    const source = new window.Image();
+    function measure() {
+      if (!ready) return;
+      const width = 640;
+      const height = Math.round(width * source.height / source.width);
+      surface!.width = width; surface!.height = height;
+      const sample = document.createElement("canvas"); sample.width = width; sample.height = height;
+      const sampleCtx = sample.getContext("2d", { willReadFrequently: true });
+      if (!sampleCtx) return;
+      sampleCtx.drawImage(source, 0, 0, width, height);
+      const pixels = sampleCtx.getImageData(0, 0, width, height).data;
+      points = [];
+      for (let y = 8; y < height - 8; y += 5) for (let x = 8; x < width * .46; x += 5) {
+        const n = (y * width + x) * 4;
+        const ink = press ? 1 - pixels[n] / 255 : pixels[n] / 255;
+        // Pick real ink near the dissolving side of the composition.
+        if (pixels[n + 3] > 120 && ink > .5 && ((x * 7 + y * 3) % 19) < 3) points.push({ x, y, r: .5 + ink * .7, phase: x * .06 + y * .09 });
+      }
+      draw(); schedule();
+    }
+    function draw() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, surface!.width, surface!.height);
+      if (preference.matches) return;
+      ctx.fillStyle = press ? "#111" : "#f1efe5";
+      ctx.globalAlpha = .55;
+      const dispersion = 1 + (1 - progress) * 9;
+      for (const point of points) {
+        const dx = Math.sin(time * .4 + point.phase) * dispersion;
+        const dy = Math.cos(time * .3 + point.phase) * dispersion * .55;
+        ctx.beginPath(); ctx.arc(point.x + dx, point.y + dy, point.r, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    function update() {
+      if (pause.current) return;
+      const b = el!.getBoundingClientRect();
+      progress = Math.max(0, Math.min(1, (innerHeight - b.top) / (innerHeight + b.height)));
+      el!.style.setProperty("--art-progress", String(preference.matches ? .5 : progress));
+      draw(); schedule();
+    }
+    function tick(timestamp: number) {
       request = 0;
-      const b = el.getBoundingClientRect();
-      const p = Math.max(0, Math.min(1, (innerHeight - b.top) / (innerHeight + b.height)));
-      el.style.setProperty("--art-progress", String(p));
-      el.style.setProperty("--crank", `${p * 360}deg`);
-    };
-    const schedule = () => { if (!request) request = requestAnimationFrame(update); };
-    const observer = typeof IntersectionObserver === "undefined" ? null : new IntersectionObserver(([entry]) => el.classList.toggle("art-visible", entry.isIntersecting));
+      if (!visible || disposed || document.hidden || pause.current || preference.matches) return;
+      if (timestamp - last > 32) { time += Math.min(timestamp - last, 50) / 1000; last = timestamp; draw(); }
+      schedule();
+    }
+    function schedule() { if (!request && ready && visible && !disposed && !pause.current && !document.hidden && !preference.matches) request = requestAnimationFrame(tick); }
+    const observer = typeof IntersectionObserver === "undefined" ? null : new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; schedule(); });
     observer?.observe(el);
-    const visibility = () => el.classList.toggle("art-hidden", document.hidden);
-    addEventListener("scroll", schedule, { passive: true });
-    addEventListener("resize", schedule);
-    document.addEventListener("visibilitychange", visibility);
-    update();
-    return () => { observer?.disconnect(); cancelAnimationFrame(request); removeEventListener("scroll", schedule); removeEventListener("resize", schedule); document.removeEventListener("visibilitychange", visibility); };
-  }, []);
-  const press = kind === "press";
-  return <div ref={root} className={`structure-art ${press ? "structure-press" : "structure-systems"} ${paused ? "art-paused" : ""}`}>
-    <div className="structure-art-label"><span>{press ? "Ideas, put into print." : "Applied AI. Connected systems."}</span><button onClick={() => setPaused(!paused)} aria-pressed={paused}>{paused ? "Resume motion" : "Pause motion"}</button></div>
-    <svg viewBox={press ? "120 60 620 310" : "0 0 800 400"} fill="none" aria-hidden="true">
-      <defs>
-        <pattern id={`${id}-dots`} width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.6" fill="currentColor" /></pattern>
-        <linearGradient id={`${id}-fade`}><stop offset="0" stopColor="white" /><stop offset="1" stopColor="black" /></linearGradient>
-        <mask id={`${id}-mask`}><rect width="800" height="400" fill={`url(#${id}-fade)`} /></mask>
-      </defs>
-      {press ? <>
-        <g stroke="currentColor" strokeWidth="2">
-          <path d="M200 95H590V275H200z M220 95V275 M565 95V275 M175 275H615V293H175z" />
-          <path d="M200 107H565 M200 162H565 M200 188H565 M200 243H565" />
-          <ellipse cx="220" cy="135" rx="22" ry="28" /><ellipse cx="565" cy="135" rx="22" ry="28" />
-          <ellipse cx="220" cy="215" rx="22" ry="28" /><ellipse cx="565" cy="215" rx="22" ry="28" />
-          <path d="M215 107H565V163H215z" fill={`url(#${id}-dots)`} mask={`url(#${id}-mask)`} />
-          <path d="M220 188H565V243H220z" fill={`url(#${id}-dots)`} opacity=".25" />
-          <g className="press-sheet"><path d="M310 164H490L515 336H285Z" fill="var(--color-bg, #efeee9)" /><path d="M330 200H473 M328 218H475 M325 236H478 M322 254H480 M319 272H482 M316 290H460" /></g>
-          <g className="press-crank"><path d="M586 215H630V167H679" strokeWidth="3" /><rect x="673" y="157" width="37" height="18" rx="8" fill={`url(#${id}-dots)`} /></g>
-          <path d="M180 75H610 M180 65V85 M610 65V85 M165 98V293" strokeDasharray="3 5" opacity=".4" />
-        </g>
-      </> : <g stroke="currentColor">
-        <path d="M160 205L365 112L510 244L667 130 M160 205L410 310L667 130 M365 112L410 310" strokeWidth="1" />
-        {[{x:160,y:205,r:87},{x:365,y:112,r:39},{x:510,y:244,r:57},{x:667,y:130,r:28},{x:410,y:310,r:21}].map((n,i) => <g key={i}><circle cx={n.x} cy={n.y} r={n.r} fill={i % 2 === 0 ? `url(#${id}-dots)` : "none"} /><circle cx={n.x} cy={n.y} r={n.r+9} strokeDasharray="2 5" opacity=".5" /><path d={`M${n.x-n.r-18} ${n.y}H${n.x+n.r+18} M${n.x} ${n.y-n.r-18}V${n.y+n.r+18}`} opacity=".35" /></g>)}
-      </g>}
-      <g className="art-particles" fill="currentColor">
-        {Array.from({length:100},(_,i) => {
-          const x = press ? 115 + (i*37 % 210) : 60 + (i*47 % 680);
-          const y = 70 + (i*61 % 270);
-          return <circle key={i} cx={x} cy={y} r={.7+(i%4)*.45} opacity={.2+(i%5)*.12} style={{ animationDelay:`-${i*.31}s`, animationDuration:`${6+i%6}s` }} />;
-        })}
-      </g>
-    </svg>
-    <div className="structure-art-foot"><span>{press ? "Ink → structure → ideas" : "Structure from possibility"}</span><span aria-hidden="true">＋</span></div>
+    source.onload = () => { if (!disposed) { ready = true; measure(); update(); } }; source.src = src;
+    addEventListener("scroll", update, { passive: true });
+    document.addEventListener("visibilitychange", update);
+    preference.addEventListener("change", update);
+    el.addEventListener("art-motion-change", update);
+    return () => { disposed = true; source.onload = null; observer?.disconnect(); cancelAnimationFrame(request); removeEventListener("scroll", update); document.removeEventListener("visibilitychange", update); preference.removeEventListener("change", update); el.removeEventListener("art-motion-change", update); };
+  }, [press, src]);
+  function toggle() { pause.current = !pause.current; setPaused(pause.current); root.current?.dispatchEvent(new Event("art-motion-change")); }
+  return <div ref={root} className={`finished-art ${press ? "finished-press" : "finished-systems"}`}>
+    <div className="finished-art-top"><span>{press ? "Ideas, put into print." : "Prometheus"}</span><button onClick={toggle} aria-pressed={paused}>{paused ? "Resume motion" : "Pause motion"}</button></div>
+    <div className="finished-art-stage">
+      <Image src={src} alt={press ? "Printing press transitioning from rich halftone ink into precise mechanical linework" : "Connected systems transitioning from dimensional halftone spheres into fine construction lines"} fill sizes="(max-width: 767px) 100vw, 1100px" />
+      <canvas ref={canvas} aria-hidden="true" />
+      {press && essay && <Link href={essay.href} className="printed-essay"><span>From the archive</span><strong>{essay.title}</strong><span>Read essay ↗</span></Link>}
+    </div>
+    {!press && <div className="finished-art-bottom"><span>Applied AI. Connected systems.</span><a href="https://prometheus.today" target="_blank" rel="noopener noreferrer">Explore Prometheus ↗</a></div>}
   </div>;
 }

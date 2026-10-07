@@ -55,7 +55,7 @@ export function ExplorativeHomepage({
     homepageAccentOffsets(projects, posts);
 
   return (
-    <div className="homepage structure-home min-h-screen bg-bg">
+    <div className="homepage structure-home finished-home min-h-screen bg-bg">
       {/* Fixed islands: mounted first so they overlay all bands */}
       <ScrollReveals />
 

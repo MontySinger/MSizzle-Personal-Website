@@ -37,7 +37,7 @@ describe("SectionBuilding (21-02 Swiss numbered index)", () => {
     expect(rows).toHaveLength(1);
 
     expect(screen.getByText("001")).toBeDefined();
-    expect(screen.getByText("Prometheus")).toBeDefined();
+    expect(screen.getByText("Prometheus", { selector: ".a-row .ttl" })).toBeDefined();
     expect(
       screen.getByText(
         "AI integrations and education. Practical leverage, not hype."
@@ -131,7 +131,7 @@ describe("SectionBuilding (21-02 Swiss numbered index)", () => {
     expect(rows).toHaveLength(3);
 
     // Prometheus plus the first two Notion projects; the rest are dropped.
-    expect(screen.getByText("Prometheus")).toBeDefined();
+    expect(screen.getByText("Prometheus", { selector: ".a-row .ttl" })).toBeDefined();
     expect(screen.getByText("Project 0")).toBeDefined();
     expect(screen.getByText("Project 1")).toBeDefined();
     expect(screen.queryByText("Project 2")).toBeNull();
