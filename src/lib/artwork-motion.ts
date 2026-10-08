@@ -9,7 +9,10 @@ export function crankPose(angle: number, width: number, height: number) {
     y: hub.y + Math.cos(angle) * radius,
   };
   const grip = { x: elbow.x + width * .04, y: elbow.y + height * .008 };
-  return { hub, elbow, grip };
+  // The leftward half of the projected orbit is nearest the viewer.
+  // This depth controls occlusion independently of the arm's screen position.
+  const depth = -Math.sin(angle);
+  return { hub, elbow, grip, depth };
 }
 
 /** A sphere's dots revolve in 3D, then project onto its circular silhouette. */

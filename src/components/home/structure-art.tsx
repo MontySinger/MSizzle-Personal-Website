@@ -21,7 +21,7 @@ export function StructureArt({ kind, essay }: { kind: "systems" | "press"; essay
   const root = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const press = kind === "press";
-  const src = `/artwork/ink-${press ? "press" : "systems"}.webp`;
+  const src = `/artwork/ink-${press ? "press-base" : "systems"}.webp`;
   useEffect(() => {
     const el = root.current;
     const surface = canvas.current;
@@ -66,6 +66,11 @@ export function StructureArt({ kind, essay }: { kind: "systems" | "press"; essay
       ctx.restore();
       // Sample original raster details at runtime; no new replacement artwork.
       ctx.drawImage(moving, 1506, 398, 235, 92, grip.x - 7 * scale, grip.y - 43 * scale, 235 * scale, 92 * scale);
+    }
+
+    function drawShaft() {
+      if (!ctx) return;
+      // The fixed collar belongs to the roller, behind the near-side arm.
       // Keep the collar and shaft, excluding the old downward arm.
       ctx.drawImage(moving, 1296, 193, 65, 111, 1296 * scale, 193 * scale, 65 * scale, 111 * scale);
       ctx.drawImage(moving, 1361, 213, 74, 57, 1361 * scale, 213 * scale, 74 * scale, 57 * scale);
@@ -128,7 +133,15 @@ export function StructureArt({ kind, essay }: { kind: "systems" | "press"; essay
       ctx.clearRect(0, 0, width, height);
       if (!ready || preference.matches) return;
       if (!press) { drawSystems(); return; }
-      drawCrank();
+      // Composite the mechanics together before the stage's paper/ink blend.
+      // Rear arm -> opaque roller and fixed shaft -> front arm.
+      // A DOM overlay alone cannot model the crank passing around the roller.
+      const { depth } = crankPose(time * .65 + progress * Math.PI * 1.5, width, height);
+      ctx.globalAlpha = 1;
+      if (depth < 0) drawCrank();
+      ctx.drawImage(source, 0, 0, width, height);
+      drawShaft();
+      if (depth >= 0) drawCrank();
       ctx.fillStyle = "#111"; ctx.globalAlpha = .45;
       for (const point of points) {
         const dx = Math.sin(time * .4 + point.phase) * 7;
@@ -185,7 +198,7 @@ export function StructureArt({ kind, essay }: { kind: "systems" | "press"; essay
   return <div ref={root} className={`finished-art ${press ? "finished-press" : "finished-systems"}`}>
     <div className="finished-art-top"><span>{press ? "Ideas, put into print." : "Prometheus"}</span></div>
     <div className="finished-art-stage">
-      <Image src={press ? "/artwork/ink-press-base.webp" : src} alt={press ? "A working printing press with halftone shading and mechanical linework" : "Connected halftone spheres with rotating wireframes and flowing particles"} fill sizes="(max-width: 767px) 145vw, 1100px" />
+      <Image src={src} className="finished-art-fallback" alt={press ? "A working printing press with halftone shading and mechanical linework" : "Connected halftone spheres with rotating wireframes and flowing particles"} fill sizes="(max-width: 767px) 145vw, 1100px" />
       <canvas ref={canvas} aria-hidden="true" />
       {press && <>
         <div className="finished-press-crank" aria-hidden="true"><Image src="/artwork/ink-press-moving.webp" alt="" fill sizes="(max-width: 767px) 100vw, 1100px" /></div>

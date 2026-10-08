@@ -2,6 +2,15 @@ import { describe, it, expect } from "vitest";
 import { crankPose, spherePoint } from "@/lib/artwork-motion";
 
 describe("projected crank mechanics", () => {
+  it("passes in front of the roller on the near half and behind on the far half", () => {
+    const rear = crankPose(Math.PI / 2, 1774, 887);
+    const front = crankPose(Math.PI * 1.5, 1774, 887);
+    expect(rear.depth).toBeCloseTo(-1);
+    expect(front.depth).toBeCloseTo(1);
+    expect(front.elbow.x).toBeLessThan(front.hub.x);
+    expect(rear.elbow.x).toBeGreaterThan(rear.hub.x);
+    expect(front.hub).toEqual(rear.hub);
+  });
   it("holds the shaft fixed through a full turn while the grip keeps its orientation", () => {
     const initial = crankPose(0, 1774, 887);
     const radius = 887 * .22;
