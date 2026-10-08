@@ -52,19 +52,15 @@ function acOf(el: Element): string | null {
 }
 
 describe("accent continuity (D-V5-05)", () => {
-  it("SectionBuilding with 2 projects produces 3 .a-row elements reading var(--ac-0), var(--ac-1), var(--ac-2)", () => {
+  it("SectionBuilding keeps one Prometheus row at accent index zero regardless of project count", () => {
     const projects: Project[] = [
       project({ id: "p1", slug: "p1" }),
       project({ id: "p2", slug: "p2" }),
     ];
     const { container } = render(<SectionBuilding projects={projects} />);
     const rows = container.querySelectorAll(".a-row");
-    expect(rows).toHaveLength(3);
-    expect(Array.from(rows).map(acOf)).toEqual([
-      "var(--ac-0)",
-      "var(--ac-1)",
-      "var(--ac-2)",
-    ]);
+    expect(rows).toHaveLength(1);
+    expect(Array.from(rows).map(acOf)).toEqual(["var(--ac-0)"]);
   });
 
   it("SectionWriting with 5 dated posts and accentStart={3} produces 5 .e-post elements reading var(--ac-3) through var(--ac-7)", () => {
@@ -85,7 +81,7 @@ describe("accent continuity (D-V5-05)", () => {
     ]);
   });
 
-  it("rendering the real Building and Writing sections together via homepageAccentOffsets yields the continuous 0..7 sequence with no reset at the section head", () => {
+  it("rendering the real Building and Writing sections together via homepageAccentOffsets yields the continuous 0..5 sequence with no reset at the section head", () => {
     const projects: Project[] = [
       project({ id: "p1", slug: "p1" }),
       project({ id: "p2", slug: "p2" }),
@@ -111,8 +107,6 @@ describe("accent continuity (D-V5-05)", () => {
       "var(--ac-3)",
       "var(--ac-4)",
       "var(--ac-5)",
-      "var(--ac-6)",
-      "var(--ac-7)",
     ]);
     expect(new Set(sequence).size).toBe(sequence.length); // no repeat
   });

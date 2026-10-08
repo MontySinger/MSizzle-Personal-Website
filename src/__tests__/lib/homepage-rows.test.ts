@@ -57,32 +57,13 @@ describe("buildingRows", () => {
     });
   });
 
-  it("with 5 projects returns 3 rows (BUILDING_ROW_CAP): Prometheus then the first two projects", () => {
-    expect(BUILDING_ROW_CAP).toBe(3);
-    const projects: Project[] = Array.from({ length: 5 }, (_, i) =>
-      project({ id: `p${i}`, slug: `project-${i}`, title: `Project ${i}` })
-    );
-    const rows = buildingRows(projects);
-    expect(rows).toHaveLength(3);
+  it("keeps only Prometheus even when Notion returns other projects", () => {
+    expect(BUILDING_ROW_CAP).toBe(1);
+    const rows = buildingRows([project({ title: "Microgrid Data Center", slug: "data-center" })]);
+    expect(rows).toHaveLength(1);
     expect(rows[0].title).toBe("Prometheus");
-    expect(rows[1]).toMatchObject({
-      title: "Project 0",
-      href: "/building/project-0",
-      external: false,
-    });
-    expect(rows[2]).toMatchObject({
-      title: "Project 1",
-      href: "/building/project-1",
-      external: false,
-    });
   });
 
-  it("a project with no tags falls back to the UTC year of lastEdited as its status", () => {
-    const rows = buildingRows([
-      project({ tags: [], lastEdited: "2024-11-20T00:00:00.000Z" }),
-    ]);
-    expect(rows[1].status).toBe("2024");
-  });
 });
 
 describe("writingRows", () => {
@@ -146,7 +127,7 @@ describe("homepageAccentOffsets", () => {
     });
   });
 
-  it("with 2 projects and 5 dated posts is { building: 0, writing: 3, loves: 8 }", () => {
+  it("with 2 projects and 5 dated posts is { building: 0, writing: 1, loves: 6 }", () => {
     const projects: Project[] = [
       project({ id: "p1", slug: "p1" }),
       project({ id: "p2", slug: "p2" }),
@@ -156,12 +137,12 @@ describe("homepageAccentOffsets", () => {
     );
     expect(homepageAccentOffsets(projects, posts)).toEqual({
       building: 0,
-      writing: 3,
-      loves: 8,
+      writing: 1,
+      loves: 6,
     });
   });
 
-  it("with 9 projects and 9 posts is { building: 0, writing: 3, loves: 8 } -- caps apply before the offset math", () => {
+  it("with 9 projects and 9 posts is { building: 0, writing: 1, loves: 6 } -- caps apply before the offset math", () => {
     const projects: Project[] = Array.from({ length: 9 }, (_, i) =>
       project({ id: `p${i}`, slug: `p${i}` })
     );
@@ -170,8 +151,8 @@ describe("homepageAccentOffsets", () => {
     );
     expect(homepageAccentOffsets(projects, posts)).toEqual({
       building: 0,
-      writing: 3,
-      loves: 8,
+      writing: 1,
+      loves: 6,
     });
   });
 });

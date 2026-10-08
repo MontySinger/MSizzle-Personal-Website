@@ -1789,7 +1789,7 @@ body.no-motion .pb-card.pb-riffle {
 .finished-art-stage { position: relative; aspect-ratio: 2; }
 .finished-art-stage img, .finished-art-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .finished-press .finished-art-stage { mix-blend-mode: multiply; }
-.finished-systems { background: #141414; color: #f1efe5; padding: 0 26px; }
+.finished-systems { background: #0f0f0f; color: #f1efe5; padding: 0 26px; }
 .finished-systems .finished-art-top > span { font-size: clamp(22px, 3vw, 44px); font-weight: 700; letter-spacing: -.035em; }
 .finished-systems .finished-art-stage { aspect-ratio: 3; }
 .finished-systems .finished-art-bottom { border-top: 1px solid #ffffff40; padding-block: 20px; }
@@ -1819,7 +1819,7 @@ body.no-motion .pb-card.pb-riffle {
   .finished-home #building, .finished-home #writing { padding-top: 40px; }
   .finished-systems { margin-inline: calc(-1 * var(--finished-gutter)); padding-inline: var(--finished-gutter); }
   .finished-systems .finished-art-stage { aspect-ratio: 2; overflow: hidden; }
-  .finished-systems .finished-art-stage img, .finished-systems .finished-art-stage canvas { width: 145%; max-width: none; left: -22%; }
+  .finished-systems .finished-art-stage img, .finished-systems .finished-art-stage canvas { width: 145% !important; max-width: none; left: -22% !important; }
   .finished-art-top, .finished-art-bottom { font-size: 10px; }
   .finished-press .finished-art-stage { width: calc(100% + 32px); margin-left: -16px; }
   .printed-essay { gap: 4px; }
@@ -1897,7 +1897,8 @@ body.no-motion .pb-card.pb-riffle {
 .finished-field-caption a { min-height: 44px; display: inline-flex; align-items: center; gap: 30px; }
 .finished-press .finished-art-stage { overflow: visible; margin-bottom: 38px; }
 .finished-press-crank, .finished-press-feed { position: absolute; inset: 0; }
-.finished-press-crank { clip-path: inset(0 0 0 72%); transform-origin: 79.4% 27.5%; transform: rotate(calc((var(--art-progress) - .3) * 65deg)); pointer-events: none; }
+.finished-press-crank { clip-path: inset(0 0 0 72%); pointer-events: none; }
+.finished-press.has-live-art .finished-press-crank { visibility: hidden; }
 .finished-press-feed { transform: translateY(calc(var(--art-progress) * 30px)); }
 .finished-press-paper { clip-path: inset(0 28% 0 0); pointer-events: none; }
 .finished-press-feed .printed-essay { transform: rotate(.8deg); }
@@ -1940,7 +1941,25 @@ body.no-motion .pb-card.pb-riffle {
   .field-original { opacity: 1; }
   .field-ink, .field-lines { opacity: 0; }
   .field-intro { color: #f5f5f5; transform: none; }
-  .finished-press-crank, .finished-press-feed { transform: none; }
+  .finished-press.has-live-art .finished-press-crank { visibility: visible; }
+  .finished-press-feed { transform: none; }
   .pb-card .pb-frame, .pb-card.is-open .pb-note { transition: none; animation: none; }
   .pinboard.is-dealing .pb-card { animation: none; }
+}
+
+/* A compact section, with a heading and one distinct action. */
+.finished-advice { max-width: 1600px; margin: 80px auto 0; padding: 0 var(--finished-gutter) 64px; }
+.finished-advice-label { border-top: 1px solid #222; padding-top: 18px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
+.finished-advice-body { display: flex; justify-content: space-between; align-items: end; gap: 32px; padding-top: 28px; }
+.finished-advice h2 { font-size: clamp(32px, 5vw, 72px); font-weight: 800; line-height: .98; letter-spacing: -.045em; }
+.finished-advice p { margin-top: 16px; font-size: 13px; color: var(--color-text-muted); }
+.finished-advice-link { display: inline-flex; align-items: center; gap: 36px; flex-shrink: 0; min-height: 48px; border: 1px solid #222; padding: 12px 18px; font-size: 13px; }
+.finished-advice-link:hover, .finished-advice-link:focus-visible { background: #141414; color: #f1efe5; }
+.finished-building-page { min-height: 75svh; padding-bottom: 64px; }
+.finished-building-page .structure-section-title { font-weight: 800; letter-spacing: -.05em; }
+@media (max-width: 767px) {
+  .finished-advice { margin-top: 64px; padding-bottom: 44px; }
+  .finished-advice-body { display: block; padding-top: 22px; }
+  .finished-advice h2 { max-width: 11ch; }
+  .finished-advice-link { margin-top: 24px; }
 }

@@ -1,29 +1,24 @@
-/**
- * Tests for /projects page -- Plan 04 (16-04) photo grid rebuild.
- * Tests for /projects/[slug] detail page -- Plan 07 (16-07) repaint.
- *
- * Asserts (index page):
- * (a) Card components render for each project (not ListRow)
- * (b) When getPublishedProjects returns [] the text "No projects yet" appears
- * (c) PageHero renders with title="Building"
- *
- * Route note: /projects was renamed to /building (quick 260706-tx6); these tests
- * now import @/app/building/* and assert /building hrefs.
- *
- * Asserts (detail page - Plan 07):
- * (d) Breadcrumbs Building item href is /building
- * (e) PageHero renders with project title
- * (f) Cover image renders with fetchPriority="high" when project.cover exists
- * (g) No cover image when project.cover is null/absent
- * (h) externalUrl renders with rel="noopener noreferrer" target="_blank"
- * (i) NotionRenderer is present
- *
- * Also retains Plan 01 WATCHING_ITEMS shape verifications.
- */
 import React from "react";
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, afterEach, vi } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import { WATCHING_ITEMS } from "@/lib/watching";
+import BuildingPage, { metadata } from "@/app/building/page";
+
+vi.mock("@/components/home/scroll-reveals", () => ({ ScrollReveals: () => null }));
+afterEach(cleanup);
+
+describe("Building page", () => {
+  it("centers Prometheus with its illustration and external destination", () => {
+    const { container } = render(<BuildingPage />);
+    expect(screen.getByRole("heading", { name: "01 · Building" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Explore Prometheus/ }).getAttribute("href")).toBe("https://prometheus.today");
+    expect(container.querySelectorAll(".a-row")).toHaveLength(1);
+    expect(screen.queryByText(/Microgrid/i)).toBeNull();
+  });
+  it("keeps the existing canonical Building URL", () => {
+    expect(metadata.alternates?.canonical).toBe("/building");
+  });
+});
 
 // Mock next/image
 vi.mock("next/image", () => ({
@@ -68,19 +63,8 @@ vi.mock("@/components/notion/notion-renderer", () => ({
     }),
 }));
 
-afterEach(() => {
-  cleanup();
-  vi.clearAllMocks();
-});
 
-// Helper to render the async Server Component in a test context
-async function renderProjectsPage() {
-  const { default: BuildingPage } = await import("@/app/building/page");
-  const element = await BuildingPage();
-  render(element as any);
-}
-
-describe("/projects page (Plan 04 / PG-03)", () => {
+describe("Watching data", () => {
   // ── Plan 01 data module shape verifications (retained) ──────────────────
   it("WATCHING_ITEMS from @/lib/watching has length 6 (Plan 01 deliverable)", () => {
     expect(WATCHING_ITEMS.length).toBe(6);
@@ -103,187 +87,6 @@ describe("/projects page (Plan 04 / PG-03)", () => {
     });
   });
 
-  // ── Plan 04 page integration tests ──────────────────────────────────────
-  it('renders empty-state "No projects yet" when getPublishedProjects returns []', async () => {
-    const { getPublishedProjects } = await import("@/lib/notion-projects");
-    vi.mocked(getPublishedProjects).mockResolvedValue([]);
-    await renderProjectsPage();
-    expect(screen.getByText(/No projects yet/i)).toBeDefined();
-  });
-
-  it("renders PageHero with title Building", async () => {
-    const { getPublishedProjects } = await import("@/lib/notion-projects");
-    vi.mocked(getPublishedProjects).mockResolvedValue([]);
-    await renderProjectsPage();
-    const h1 = screen.getByRole("heading", { level: 1 });
-    expect(h1.textContent).toContain("Building");
-  });
-
-  it("renders Card components for each project (not ListRow)", async () => {
-    const { getPublishedProjects } = await import("@/lib/notion-projects");
-    vi.mocked(getPublishedProjects).mockResolvedValue([
-      {
-        id: "proj-1",
-        slug: "ai-assistant",
-        title: "AI Assistant",
-        description: "An AI product",
-        cover: null,
-        image: null,
-        emoji: null,
-        externalUrl: "",
-        tags: ["AI"],
-        featured: true,
-        published: true,
-        lastEdited: "2025-04-01",
-      },
-      {
-        id: "proj-2",
-        slug: "design-tool",
-        title: "Design Tool",
-        description: "A design product",
-        cover: "https://example.com/img.jpg",
-        image: "https://example.com/img.jpg",
-        emoji: null,
-        externalUrl: "https://example.com",
-        tags: ["Design"],
-        featured: false,
-        published: true,
-        lastEdited: "2025-06-15",
-      },
-    ]);
-    await renderProjectsPage();
-    expect(screen.getByText("AI Assistant")).toBeDefined();
-    expect(screen.getByText("Design Tool")).toBeDefined();
-    // Cards link to /building/[slug]
-    const links = screen.getAllByRole("link");
-    const hrefs = links.map((l) => l.getAttribute("href"));
-    expect(hrefs).toContain("/building/ai-assistant");
-    expect(hrefs).toContain("/building/design-tool");
-  });
-
-  it("renders a title-card face instead of a cover image when project.image is non-null (Phase 19)", async () => {
-    const { getPublishedProjects } = await import("@/lib/notion-projects");
-    vi.mocked(getPublishedProjects).mockResolvedValue([
-      {
-        id: "proj-with-image",
-        slug: "project-with-image",
-        title: "Project With Image",
-        description: "Has an image",
-        cover: "https://notion.so/image.jpg",
-        image: "https://notion.so/image.jpg",
-        emoji: null,
-        externalUrl: "",
-        tags: [],
-        featured: false,
-        published: true,
-        lastEdited: "2025-07-01",
-      },
-    ]);
-    await renderProjectsPage();
-    // Projects no longer use cover images as card faces (Phase 19 decision)
-    const allImgs = document.querySelectorAll("img");
-    const coverImg = Array.from(allImgs).find((img) =>
-      img.getAttribute("src")?.includes("notion-cover?pageId=proj-with-image")
-    );
-    expect(coverImg).toBeUndefined();
-    // A title-card element containing the project title should render instead
-    const titleCards = document.querySelectorAll(".title-card");
-    expect(titleCards.length).toBeGreaterThan(0);
-    const titleTexts = Array.from(titleCards).map((el) => el.textContent ?? "");
-    expect(titleTexts.some((t) => t.includes("Project With Image"))).toBe(true);
-  });
-
-  it("does NOT render cover image when project.image is null", async () => {
-    const { getPublishedProjects } = await import("@/lib/notion-projects");
-    vi.mocked(getPublishedProjects).mockResolvedValue([
-      {
-        id: "proj-no-image",
-        slug: "project-no-image",
-        title: "Project No Image",
-        description: "No image here",
-        cover: null,
-        image: null,
-        emoji: null,
-        externalUrl: "",
-        tags: [],
-        featured: false,
-        published: true,
-        lastEdited: "2025-07-01",
-      },
-    ]);
-    await renderProjectsPage();
-    const allImgs = document.querySelectorAll("img");
-    const coverImg = Array.from(allImgs).find((img) =>
-      img.getAttribute("src")?.includes("notion-cover?pageId=proj-no-image")
-    );
-    expect(coverImg).toBeUndefined();
-  });
-});
-
-describe("/projects title-card grid (Phase 19 / 19-02)", () => {
-  it("grid container has class card-grid", async () => {
-    const { getPublishedProjects } = await import("@/lib/notion-projects");
-    vi.mocked(getPublishedProjects).mockResolvedValue([
-      {
-        id: "grid-proj",
-        slug: "grid-project",
-        title: "Grid Project",
-        description: "For grid class test",
-        cover: null,
-        image: null,
-        emoji: null,
-        externalUrl: "",
-        tags: [],
-        featured: false,
-        published: true,
-        lastEdited: "2025-04-01",
-      },
-    ]);
-    await renderProjectsPage();
-    const cardGrid = document.querySelector(".card-grid");
-    expect(cardGrid).not.toBeNull();
-  });
-
-  it("first project card has paper field and second has ink field (deterministic index alternation)", async () => {
-    const { getPublishedProjects } = await import("@/lib/notion-projects");
-    vi.mocked(getPublishedProjects).mockResolvedValue([
-      {
-        id: "proj-a",
-        slug: "project-a",
-        title: "Project Alpha",
-        description: "First project",
-        cover: null,
-        image: null,
-        emoji: null,
-        externalUrl: "",
-        tags: [],
-        featured: false,
-        published: true,
-        lastEdited: "2025-06-01",
-      },
-      {
-        id: "proj-b",
-        slug: "project-b",
-        title: "Project Beta",
-        description: "Second project",
-        cover: null,
-        image: null,
-        emoji: null,
-        externalUrl: "",
-        tags: [],
-        featured: false,
-        published: true,
-        lastEdited: "2025-06-01",
-      },
-    ]);
-    await renderProjectsPage();
-    const titleCards = document.querySelectorAll(".title-card");
-    expect(titleCards.length).toBeGreaterThanOrEqual(2);
-    // First card: paper field -- has "title-card" class but NOT "title-card--ink"
-    expect(titleCards[0].classList.contains("title-card--ink")).toBe(false);
-    // Second card: ink field -- has "title-card--ink"
-    expect(titleCards[1].classList.contains("title-card--ink")).toBe(true);
-  });
 });
 
 // ── Plan 07: /projects/[slug] detail page tests ─────────────────────────────

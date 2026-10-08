@@ -6,10 +6,8 @@ import { accentStyle } from "@/lib/accent-rotation";
 
 /**
  * SectionBuilding: Swiss numbered index for the Building band (HP-02).
- * Row 001 is always the hardcoded Prometheus row. Rows 002+ map one-to-one
- * from the `projects` prop (real, already-fetched Notion Featured Projects,
- * forwarded by the orchestrator in Plan 21-05) — this absorbs
- * section-work.tsx's Notion data role so that component can be deleted.
+ * Prometheus is the sole public feature. The row helper also owns the
+ * document-order accent count so Writing starts immediately after it.
  * Server Component only; no client directive.
  * Full-row hover/focus inversion is the site's only hover language (HP-02),
  * implemented via the .a-row CSS family in globals.css.
@@ -20,8 +18,10 @@ import { accentStyle } from "@/lib/accent-rotation";
 export function SectionBuilding({
   projects = [],
   accentStart = 0,
+  standalone = false,
 }: {
   projects?: Project[];
+  standalone?: boolean;
   /**
    * Document-order accent index this section's first row should carry.
    * `nth-child` cannot count across sibling `<section>` elements, so the
@@ -37,7 +37,7 @@ export function SectionBuilding({
       <h2 className="reveal font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
         01 · Building
       </h2>
-      <div className="structure-section-title" aria-hidden="true">Building.</div>
+      {standalone ? <h1 className="structure-section-title">Building.</h1> : <div className="structure-section-title" aria-hidden="true">Building.</div>}
       <StructureArt kind="systems" />
       {rows.map((row, i) => {
         const children = (
@@ -71,9 +71,6 @@ export function SectionBuilding({
           </Link>
         );
       })}
-      <Link className="more reveal" href="/building">
-        all projects →
-      </Link>
     </section>
   );
 }

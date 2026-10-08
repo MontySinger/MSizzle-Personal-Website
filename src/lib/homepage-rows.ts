@@ -18,7 +18,8 @@ import { estimateReadingTime } from "@/utils/reading-time";
  * means the counter can never drift from what is actually on the page.
  */
 
-export const BUILDING_ROW_CAP = 3;
+// The public Building section now focuses exclusively on Prometheus.
+export const BUILDING_ROW_CAP = 1;
 export const WRITING_ROW_CAP = 5;
 
 export type BuildingRow = {
