@@ -49,7 +49,7 @@ export function buildPersonSchema() {
     },
     sameAs: [
       'https://linkedin.com/in/monty-singer',
-      'https://github.com/MSizzle',
+      'https://github.com/MontySinger',
       'https://x.com/themontysinger',
     ],
     alumniOf: {

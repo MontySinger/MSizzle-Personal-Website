@@ -85,7 +85,7 @@ export async function GET() {
     '- Monty Monthly: https://montymonthly.substack.com',
     '- X: https://x.com/themontysinger',
     '- LinkedIn: https://linkedin.com/in/monty-singer',
-    '- GitHub: https://github.com/MSizzle',
+    '- GitHub: https://github.com/MontySinger',
     ''
   )
 
