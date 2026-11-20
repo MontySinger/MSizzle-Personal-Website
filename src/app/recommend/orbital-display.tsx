@@ -1,8 +1,9 @@
 import styles from "./recommend.module.css";
 
 /** A vector flight display. The sequence counter records actual launches. */
-export function OrbitalDisplay({ sequence, progress = 0 }: { sequence: number; progress?: number }) {
+export function OrbitalDisplay({ sequence, angle }: { sequence: number; angle: number }) {
   const entry = String(sequence).padStart(2, "0");
+  const radians = angle * Math.PI / 180;
   return <svg className={styles.flightDisplay} viewBox="0 0 800 320" aria-hidden="true">
     <defs>
       <pattern id="flight-grid" width="32" height="32" patternUnits="userSpaceOnUse">
@@ -13,7 +14,6 @@ export function OrbitalDisplay({ sequence, progress = 0 }: { sequence: number; p
         <rect width="3" height="3" fill="#cfcaac"/><path d="M0 2.3H3" stroke="#759185" strokeWidth=".65"/>
       </pattern>
       <clipPath id="earth-limb"><circle cx="350" cy="155" r="99"/></clipPath>
-      <path id="flight-path" d="M132 221C108 175 245 81 394 52S620 49 602 96 453 231 311 253 146 250 132 221Z"/>
     </defs>
     <rect width="800" height="320" fill="#172522"/>
     <rect width="800" height="320" fill="url(#flight-grid)"/>
@@ -35,8 +35,10 @@ export function OrbitalDisplay({ sequence, progress = 0 }: { sequence: number; p
         <path d="M251 155h198M258 119q92 19 184 0M258 191q92-19 184 0M277 87q73 14 146 0M277 224q73-14 146 0"/>
       </g>
     </g>
-    <use href="#flight-path" fill="none" stroke="#f8d9a3" strokeWidth="1.5" strokeDasharray="5 4"/>
-    <circle r="5" fill="#ffc883" stroke="#fcf2ce" className={styles.probe} style={{offsetDistance: `${(46 + progress) % 100}%`}}/>
+    <g transform="translate(359 155) rotate(-19)">
+      <ellipse rx="250" ry="75" fill="none" stroke="#f8d9a3" strokeWidth="1.5" strokeDasharray="5 4"/>
+      <circle cx={250 * Math.cos(radians)} cy={75 * Math.sin(radians)} r="5" fill="#ffc883" stroke="#fcf2ce"/>
+    </g>
     <g fontFamily="monospace" fontSize="13" fill="#dedac0" letterSpacing="1.4">
       <text x="42" y="47">ORBITAL</text>
       <text x="633" y="234">SEQUENCE</text><text x="633" y="258">{entry}</text>

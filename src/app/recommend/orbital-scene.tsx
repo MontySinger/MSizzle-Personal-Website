@@ -11,7 +11,7 @@ export function OrbitalScene() {
     if (start === null) return;
     let frame: number;
     const tick = (now: number) => {
-      const percent = Math.min(100, (now - start) / 60);
+      const percent = Math.min(100, Math.max(0, (now - start - 600) / 60));
       setProgress(percent);
       if (percent < 100) frame = requestAnimationFrame(tick);
       else setStart(null);
@@ -25,15 +25,20 @@ export function OrbitalScene() {
     setProgress(0);
     setStart(performance.now());
   }
-  const phase = start !== null ? "Tracking" : progress === 100 ? "Orbit complete" : "Standby";
+  const angle = progress * 3.6;
+  const phase = start !== null ? (progress === 0 ? "Relay warming" : "Tracking") : progress === 100 ? "Orbit complete" : "Standby";
   return <section className={styles.screen} aria-label="Orbital flight simulator">
-    <div className={styles.plot}><OrbitalDisplay sequence={flight} progress={progress}/></div>
-    <div className={styles.panel}><span role="status">{phase}</span>
-      <output aria-live="off">{String(Math.floor(progress * 3.6)).padStart(3,"0")}°</output>
+    <div className={styles.plot}><OrbitalDisplay sequence={flight} angle={angle}/></div>
+    <div className={styles.panel}><span className={styles.relay} data-active={start !== null} role="status">{phase}</span>
+      <output aria-live="off">{String(Math.floor(angle)).padStart(3,"0")}°</output>
       <progress value={progress} max={100} aria-label="Orbit completed"/>
       <button type="button" onClick={start !== null ? () => {setStart(null); setProgress(0);} : launch}>
         {start !== null ? "Abort flight" : flight ? "Launch again ↗" : "Launch sequence ↗"}
       </button>
     </div>
+    {progress === 100 && <details className={styles.slip}>
+      <summary>Read ground transmission</summary>
+      <p>Signal received. We left a light on for you.</p>
+    </details>}
   </section>;
 }

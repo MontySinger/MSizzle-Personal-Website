@@ -9,3 +9,7 @@
 .reset { margin-left:auto; font-style:italic; }
 .reset:disabled { opacity:.45; cursor:default; }
 @media(max-width:700px) { .instruments { gap:0 .15rem; } .label {width:100%; margin:.25rem 0 0;} .instruments button{font-size:.75rem;} .reset {margin-left:0;} }
+.sight { position:absolute; pointer-events:none; width:15px; height:15px; transform:translate(-50%,-50%); border:2px solid #ebce86; outline:1px solid #423826; border-radius:50%; }
+.annotation { background:#eee5cb; color:#413c2a; padding:.5rem clamp(.65rem,1.8vw,1.75rem); font:italic 1rem/1.4 Georgia,serif; border-bottom:1px solid #a79c7e; }
+.annotation:empty { display:none; }
+.instruments button:focus-visible { outline:2px solid #4a5331; outline-offset:-2px; }

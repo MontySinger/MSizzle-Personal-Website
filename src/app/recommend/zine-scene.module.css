@@ -1,5 +1,5 @@
 .press { width: 100%; min-width: 0; grid-column: 1/-1; margin: 0; color: #191a18; }
-.sheet { overflow: hidden; background: #eee9d8; border: 2px solid currentColor; }
+.sheet { position: relative; overflow: hidden; background: #eee9d8; border: 2px solid currentColor; }
 .print, .print img { display: block; width: 100%; }
 .print { animation: pull .36s ease-out both; }
 .print img { height: clamp(12rem, 27vw, 29rem); object-fit: cover; object-position: center; }
@@ -13,3 +13,13 @@
 @keyframes pull { from { transform: translateY(-4%) rotate(-.5deg); opacity: .65; } to { transform: none; opacity: 1; } }
 @media (max-width: 600px) { .print img { height: auto; } }
 @media (prefers-reduced-motion: reduce) { .print { animation: none; } }
+
+.corner { position: absolute; right: 0; bottom: 0; max-width: min(15rem, 80%); background: #fff4d8; color: #24221e; box-shadow: -2px -2px 0 #24221e; }
+.corner summary { display: flex; align-items: center; gap: .55rem; min-height: 44px; padding: .35rem .8rem; font: bold .75rem/1.1 "Courier New", monospace; cursor: pointer; list-style: none; }
+.corner summary::-webkit-details-marker { display: none; }
+.corner summary::before { content: ""; width: .75rem; height: .75rem; background: linear-gradient(135deg, transparent 45%, currentColor 46%, currentColor 57%, #cbbd96 58%); }
+.corner[open] summary::before { transform: rotate(180deg); }
+.corner summary:focus-visible { outline: 2px dashed currentColor; outline-offset: -4px; }
+.corner p { margin: 0; padding: 0 .9rem .8rem; font: italic 1.05rem/1.15 Georgia, serif; }
+.sheet { isolation: isolate; }
+.print { position: relative; clip-path: polygon(0 0,100% 0,100% 99%,94% 99.6%,88% 98.8%,79% 99.8%,72% 99.2%,63% 99.7%,53% 98.8%,45% 99.6%,37% 99%,26% 99.8%,16% 99.1%,8% 99.7%,0 99%); }

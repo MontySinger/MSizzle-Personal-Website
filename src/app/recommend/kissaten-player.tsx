@@ -38,6 +38,10 @@ function Deck({ phase }: { phase: Phase }) {
     </g>
     <circle cx="278" cy="244" r="5.6" fill="url(#ks-cap)" stroke="#514430" strokeWidth="1"/>
     <g transform="translate(597 105)"><circle cx="2" cy="4" r="33" fill="#686659"/><circle r="32" fill="url(#ks-chrome)" stroke="#48483d" strokeWidth="1.5"/><circle r="25" fill="#343731" stroke="#c3c0ac" strokeWidth="2"/></g>
+    <g aria-hidden="true" transform="translate(605 283)">
+      <ellipse cy="4" rx="13" ry="7" fill="#858171"/>
+      <path d="M-9-6v8q9 7 18 0v-8" fill="none" stroke="#474941" strokeWidth="4"/>
+    </g>
     <g transform="translate(597 105)">
       <g className={styles.arm}>
         <rect x="-11" y="-42" width="22" height="50" rx="4" fill="#272924" stroke="#504e41"/>
@@ -116,6 +120,10 @@ export function KissatenPlayer() {
       <span className={styles.status} role="status">{audioError ? "Audio unavailable" : phase === "cueing" ? "Cueing side A" : phase === "paused" ? "At rest" : phase === "playing" ? "Playing side A" : "Side A"}</span>
       <button type="button" aria-pressed={sound} onClick={toggleSound} aria-label={sound ? "Turn music off" : "Turn music on"}>Music {sound ? "on" : "off"}</button>
     </div>
+    <details className={styles.sleeve}>
+      <summary>Sleeve notes</summary>
+      <p><strong>Afternoon Trio</strong><span>Piano, walking bass and brushes. Eight bars for the window seat.</span></p>
+    </details>
     <audio ref={audio} src="/recommend/kissaten/afternoon-trio.mp3" muted={!sound || phase !== "playing"} loop preload="none" />
   </section>;
 }

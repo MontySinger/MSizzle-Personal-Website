@@ -29,9 +29,16 @@ export function GoblinScene({ onFeed }: { onFeed?: () => void }) {
         </svg>
         <div className={styles.cloth} aria-hidden="true" />
         {/* The transparent cutout preserves the original character, utensil and dish. */}
-        <img key={bites} className={styles.character} data-bite={bites > 0}
+        <div className={styles.serving}>
+        <img className={styles.character}
           src="/recommend/goblin/link-goblin.png" width={1200} height={760}
           alt="The original blue Link Goblin, twirling a URL-shaped noodle over a plate of spaghetti." />
+        {bites > 0 && <svg key={bites} viewBox="0 0 400 253" className={styles.bite} aria-hidden="true">
+          <path className={styles.strand} pathLength="1" d="M122 115 C119 163 124 171 155 160 S200 147 210 127 S225 108 239 107" />
+          <path className={styles.link} d="m-4 1 3-3m0 5 3-3m-6 2-1 1a2 2 0 0 1-3-3l3-3a2 2 0 0 1 3 0m2 1 1-1a2 2 0 0 1 3 3l-3 3a2 2 0 0 1-3 0" />
+          <path className={styles.thanks} d="M305 28c-7-10-16 0 0 9 16-14 5-20 0-9Z" />
+        </svg>}
+        </div>
       </div>
       <figcaption className={styles.caption}>
         <button type="button" className={styles.feed} onClick={feed}>

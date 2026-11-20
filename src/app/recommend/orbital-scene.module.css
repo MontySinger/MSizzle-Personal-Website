@@ -6,3 +6,8 @@
 .panel progress{width:100%;height:.35rem;accent-color:#f5ba76;}
 .panel button{color:#ffdaa6;border:1px solid #bab899;padding:.6rem;min-height:44px;text-align:left;cursor:pointer;}
 @media(max-width:700px){.screen{grid-template-columns:1fr;}.plot{min-height:0;}.panel{grid-template-columns:1fr auto;align-items:center;border:0;border-top:1px dashed #677e70;padding:.8rem;}.panel output{font-size:1.5rem;}}
+.relay::before {content:"";display:inline-block;width:.5em;height:.5em;margin-right:.6em;border-radius:50%;background:#819084;}
+.relay[data-active=true]::before {background:#ffc883;box-shadow:0 0 6px #ffc883;}
+.slip {grid-column:1/-1;background:#dfd9ba;color:#27362b;border-top:1px dashed #6f7665;padding:0 1rem;font:.85rem/1.5 monospace;}
+.slip summary {cursor:pointer;padding:.7rem 0;width:fit-content;}
+.slip p {margin:0;padding-bottom:.9rem;}
