@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import { LenisProvider } from "@/components/providers/lenis-provider";
 import { MotionProvider } from "@/components/providers/motion-provider";
-import { SiteHeader } from "@/components/nav/site-header";
+import { SiteFrame } from "@/components/layout/site-frame";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { UmamiAnalytics } from "@/components/analytics/umami-analytics";
-import { VisitSurvey } from "@/components/visit-survey";
+
 import { SITE_URL, IDENTITY_SENTENCE } from "@/lib/seo/site";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildWebSiteSchema, buildOrganizationSchema } from "@/lib/seo/schemas";
@@ -85,16 +85,11 @@ export default function RootLayout({
         <JsonLd data={buildOrganizationSchema()} />
         <LenisProvider>
           <MotionProvider>
-            <SiteHeader />
-            <main>{children}</main>
-            <SiteFooter />
-            <VisitSurvey />
+            <SiteFrame footer={<SiteFooter />}>{children}</SiteFrame>
           </MotionProvider>
         </LenisProvider>
         <UmamiAnalytics />
-        <span aria-hidden="true" className="fixed right-3 bottom-3 z-50 text-xs opacity-20 select-none">
-          Prometheus
-        </span>
+
       </body>
     </html>
   );

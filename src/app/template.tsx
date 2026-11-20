@@ -20,7 +20,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     // the fade-in ran. Route transitions still animate (exit → initial → animate).
     <AnimatePresence mode="wait" initial={false}>
       <m.div
-        key={pathname}
+        key={pathname === "/recommend" || pathname.startsWith("/recommend/") ? "/recommend" : pathname}
         variants={variants}
         initial="initial"
         animate="animate"

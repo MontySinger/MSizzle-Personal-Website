@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PhotoMarquee } from "@/components/home/photo-marquee";
 import { Pinboard } from "@/components/home/pinboard";
 import type { LoveItem } from "@/lib/notion-loves";
@@ -29,7 +30,12 @@ export function SectionLoves({
         <h2 className="reveal font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
           03 · Things I Love
         </h2>
-        <p className="reveal text-text-dim">Things I love outside of work.</p>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+          <p className="reveal text-text-dim">Things I love outside of work.</p>
+          <Link href="/recommend" className="underline underline-offset-4">
+            Recommend a favorite <span aria-hidden="true">↗</span>
+          </Link>
+        </div>
       </div>
 
       {items.length > 0 ? (

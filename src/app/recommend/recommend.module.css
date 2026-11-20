@@ -1,0 +1,193 @@
+.world {
+  --ink:#302015; --paper:#ffe68a; --accent:#b82911; --key:#fff7d9; --display:"Chalkboard SE",ui-rounded,system-ui,sans-serif;
+  --gutter:clamp(1rem,3.2vw,4rem);
+  --inset:clamp(1rem,1.7vw,1.6rem);
+  --section-gap:clamp(1.5rem,2.4vw,2.5rem);
+  min-height:100svh; width:100%; isolation:isolate; overflow:clip;
+  background:var(--paper); color:var(--ink); padding:0 var(--gutter) var(--section-gap);
+}
+.nav,.themes,.kicker,.trigger,.next,.signature { font:600 .83rem/1.3 var(--font-jetbrains-mono),monospace; }
+.nav { display:flex; justify-content:space-between; align-items:center; min-height:50px; border-bottom:1px solid; }
+.nav a,.themes a,.trigger,.next,.utility { display:inline-flex; align-items:center; min-height:44px; }
+.nav a:hover,.next:hover,.collection a:hover {text-decoration:underline;}
+.machine { position:relative; margin:var(--inset) 0 var(--section-gap); }
+.plate { display:flex; align-items:center; justify-content:space-between; padding:var(--inset); gap:1rem; }
+.plate h1 { font:900 clamp(3.4rem,7.8vw,9rem)/.94 var(--display); letter-spacing:-.06em; margin:0; }
+.plate em { font-style:inherit; }
+.signature { text-align:right; text-transform:uppercase; letter-spacing:.08em; }
+.display { display:grid; grid-template-columns:minmax(0,1.8fr) minmax(14rem,.72fr); align-items:stretch; }
+.scene { display:block; position:relative; overflow:hidden; min-width:0; width:100%; cursor:pointer; height:clamp(17rem,39svh,34rem); }
+.art { display:block; width:100%; height:100%; object-fit:cover; }
+.effect {position:absolute;pointer-events:none;}
+.trigger { position:absolute; bottom:.75rem; left:.75rem; border:1px solid; padding:0 .75rem; background:var(--paper); color:var(--ink); }
+.collection { align-self:center; padding:clamp(1.5rem,2.4vw,2.75rem); }
+.kicker { text-transform:uppercase; letter-spacing:.09em; }
+.collection h2 { font:700 clamp(1.8rem,3vw,3.4rem)/1 var(--display); margin:.55rem 0 .7rem; overflow-wrap:anywhere; }
+.collection p { max-width:44ch; line-height:1.45; }
+.next { margin-top:.4rem; text-decoration:underline; text-underline-offset:.2em; cursor:pointer; }
+.controls { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.5fr); gap:var(--section-gap); align-items:center; padding:var(--inset); }
+.slot p { font-size:clamp(1.05rem,1.8vw,1.65rem); line-height:1.25; }
+.slot strong {display:block;}
+.slot label {font-weight:650;}
+.slot input:not([hidden]),.note textarea { width:100%; margin:.5rem 0 0; padding:.7rem .85rem; border:1px solid #38271f; border-radius:.35rem; background:#fff6df; color:#241e18; display:block; font:inherit; }
+.note:not([hidden]) {display:block;margin-top:.6rem;}
+.keys { display:flex; gap:clamp(.65rem,1.4vw,1.6rem); align-items:stretch; }
+.send,.utility,.receipt button { cursor:pointer; border:2px solid var(--ink); border-radius:.5rem; padding:.65rem 1rem; }
+.send { flex:1; color:var(--key); background:var(--accent); font:800 clamp(1.5rem,3vw,3.5rem)/1 var(--display); min-height:clamp(4.5rem,10vh,8rem); }
+.utility { justify-content:center; background:var(--paper); font-weight:700; }
+.send:active,.utility:active { transform:translateY(3px); }
+.receipt { grid-column:1/-1; padding:1rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.themes { display:flex; flex-wrap:wrap; gap:.65rem; border:0; border-top:1px solid; padding-top:.9rem; }
+.themes legend { padding-right:.7rem; }
+.themes a { padding:.25rem .6rem .25rem .25rem; gap:.45rem; border:1px solid; border-radius:3px; }
+.themes a[aria-current] { background:var(--ink);color:var(--paper); }
+.themes span {width:1.85rem;height:1.85rem;background-size:cover;}
+.world :focus-visible {outline:3px solid currentColor;outline-offset:3px;}
+/* The launch console: title plate, recessed display, then a full-width switch bank. */
+.world[data-theme=orbit] { --paper:#bcbeb2; --ink:#252d2a; --accent:#ed6509; --key:#fff4d5; --display:"Arial Black",Impact,system-ui,sans-serif; background:#bcbeb2 url('/recommend/metal.jpg') repeat; }
+.world[data-theme=orbit] .machine { padding:clamp(.6rem,1vw,1rem); border:4px ridge #a7a99a; border-radius:1.2rem; background:#bcbeb2 url('/recommend/metal.jpg'); box-shadow:4px 6px 0 #55594d; }
+.world[data-theme=orbit] .plate,.world[data-theme=orbit] .display,.world[data-theme=orbit] .controls { border:4px ridge #c1c0af; border-radius:1rem; margin-bottom:.6rem; }
+.world[data-theme=orbit] .plate { padding:1rem 3%; background:#c5c4b655; }
+.world[data-theme=orbit] h1 { text-transform:uppercase; font-size:clamp(2.8rem,6vw,7rem); line-height:.85; }
+.world[data-theme=orbit] .signature {color:#912d05; font-style:italic; font-size:clamp(.85rem,2.8vw,3.3rem);}
+.world[data-theme=orbit] .signature i {display:block; border-block:5px solid #e66c12; border-bottom-color:#ad3515; height:15px; transform:skewX(-25deg);}
+.world[data-theme=orbit] .display { background:#202d29; color:#f0dfb8; box-shadow:inset 0 5px 12px #080d0b; padding:1%; }
+.world[data-theme=orbit] .scene { height:clamp(15rem,32vh,25rem); border-radius:1.15rem; }
+.world[data-theme=orbit] .art {object-fit:contain;background:#202724;}
+.world[data-theme=orbit] .trigger {background:#1d2722;color:#f2e5c8;}
+.world[data-theme=orbit] .collection {font-family:monospace;border-left:1px dashed #cdbf98;}
+.world[data-theme=orbit] .collection h2 {font-family:monospace;text-transform:uppercase;}
+.world[data-theme=orbit] .controls { display:block; padding:.85rem 1.3rem 1.15rem; }
+.world[data-theme=orbit] .slot { background:#e9dec7; color:#363932; border:3px inset #a19e8c; border-radius:.6rem; padding:.5rem 1rem; margin-bottom:.85rem; }
+.world[data-theme=orbit] .slot p {font:600 1rem/1.4 monospace;} .world[data-theme=orbit] .slot strong {display:inline;}
+.world[data-theme=orbit] .keys {padding:.4rem;gap:2rem;}
+.world[data-theme=orbit] .send { min-height:clamp(6rem,16vh,13rem); border:5px outset #e68b3c; border-radius:1.1rem; background:linear-gradient(#ff9232,#ec6707 55%,#bf4504); box-shadow:0 0 0 4px #47392b,0 8px 0 4px #682d0b; font-size:clamp(2.2rem,5.6vw,7rem); text-transform:uppercase; letter-spacing:-.045em; text-shadow:0 2px #ac480c; }
+.world[data-theme=orbit] .send:active {transform:translateY(6px);box-shadow:0 0 0 4px #47392b;}
+.world[data-theme=orbit] .utility {min-width:15%;border:4px outset #d4c9ac;background:#e6dbc1;box-shadow:0 4px #463e30;}
+.vents {width:22%;height:12px;background:repeating-linear-gradient(90deg,#343a33 0 5px,transparent 5px 10px);margin:.6rem;}
+.world[data-theme=orbit] .scene[data-play=true] .effect { inset:0; background:linear-gradient(transparent 45%,#eeddb98a 50%,transparent 54%);animation:scan 1.4s ease both;}
+@keyframes scan {from{transform:translateY(-100%)}to{transform:translateY(100%)}}
+/* Printed comic spread and gingham table edge. */
+.world[data-theme=goblin] {background:#ffe78a;}
+.world[data-theme=goblin] .plate {color:#bd3014;transform:rotate(-1deg);}
+.world[data-theme=goblin] .plate h1 {text-shadow:2px 2px #fff4c2;}
+.world[data-theme=goblin] .scene {height:auto;aspect-ratio:554/247;}
+.world[data-theme=goblin] .art {object-fit:contain;}
+.world[data-theme=goblin] .collection {background:#fff2ba;border:2px solid;border-radius:42% 40% 38% 12% / 20% 30% 40% 12%;transform:rotate(2deg);}
+.world[data-theme=goblin] .controls {border-block:5px dashed #c12b16;background:#ffeaa0;}
+.world[data-theme=goblin] .send,.world[data-theme=goblin] .utility {border-radius:3rem;}
+.world[data-theme=goblin] .scene[data-play=true] .art {animation:chomp .65s ease;}
+@keyframes chomp {30%,70%{transform:scale(1.05,1.12) rotate(-1deg)}50%{transform:scale(1.1,1.02)}}
+/* A Japanese record sleeve, with the platter running off its right edge. */
+.world[data-theme=kissaten] {--paper:#c0c190;--accent:#49301a;--display:Georgia,serif;background:#b3b37a;color:#24190d;}
+.world[data-theme=kissaten] .machine {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;padding:1rem 0 1rem clamp(3.8rem,8vw,10rem);border-block:1px solid;min-height:70svh;}
+.japanese {writing-mode:vertical-rl;position:absolute;left:0;top:6%;font:700 clamp(2.5rem,5vw,6rem)/1.1 serif;border-right:2px solid;height:86%;}
+.world[data-theme=kissaten] .plate {display:block;grid-column:1;align-self:end;}
+.world[data-theme=kissaten] .plate h1 {font-style:italic;} .world[data-theme=kissaten] .plate em {display:block;}
+.world[data-theme=kissaten] .signature {text-align:left;margin-top:.8rem;}
+.world[data-theme=kissaten] .display {display:flex;flex-direction:column;grid-column:2;grid-row:1/3;align-items:stretch;}
+.world[data-theme=kissaten] .scene {height:auto;aspect-ratio:1.2;border-radius:50% 0 0 50%;}
+.world[data-theme=kissaten] .controls {grid-column:1;grid-row:2;display:block;align-self:start;}
+.world[data-theme=kissaten] .keys {margin-top:1rem;}
+.world[data-theme=kissaten] .collection {padding:1rem;background:#e5dfb9;align-self:stretch;}
+.world[data-theme=kissaten] .send {border-radius:3rem;}
+.world[data-theme=kissaten] .scene[data-play=true] .effect {inset:8% 18%;border-radius:50%;background:conic-gradient(transparent 75%,#fff9,transparent 96%);animation:spin 1.6s 2 linear;opacity:0;}
+@keyframes spin {from{transform:rotate(0);opacity:.6}to{transform:rotate(360deg);opacity:.6}}
+/* Night on Ocean Drive. The hotel runs behind the whole street sign. */
+.world[data-theme=miami] {--paper:#181531;--ink:#9cffff;--accent:#962464;--display:"Brush Script MT",cursive;background:#19102e url('/recommend/miami.jpg') center/cover;}
+.world[data-theme=miami] .nav,.world[data-theme=miami] .themes {background:#100e26e8;padding-inline:1rem;}
+.world[data-theme=miami] .machine {min-height:73svh;display:flex;flex-direction:column;justify-content:space-between;}
+.world[data-theme=miami] .plate h1 {color:#ffd4f5;font-style:italic;transform:rotate(-5deg);text-shadow:0 0 5px #ff42ab,0 0 15px #f12186,2px 3px #8d174e;}
+.world[data-theme=miami] .signature {color:white;background:#1b173b;padding:.5rem;}
+.world[data-theme=miami] .display {display:flex;align-items:end;justify-content:space-between;}
+.world[data-theme=miami] .scene {width:12rem;height:4rem;} .world[data-theme=miami] .scene img {display:none;}
+.world[data-theme=miami] .collection {max-width:24rem;background:#181530ed;border-left:3px solid #ff75c2;}
+.world[data-theme=miami] .controls {background:#151027ed;border-top:2px solid #ff70c4;}
+.world[data-theme=miami] .send {background:linear-gradient(#9d1b6c,#f378ba 46%,#6b1751 55%);border:3px double #9ff; font-family:Futura,sans-serif;font-style:italic;text-shadow:2px 2px #441b48;}
+.world[data-theme=miami]:has(.scene[data-alt="1"]) {background-blend-mode:screen;background-color:#651950;}
+/* Fabric-bound display case with a recessed specimen drawer. */
+.world[data-theme=field] {--paper:#e5d8b8;--ink:#2d3725;--accent:#34442e;--display:Baskerville,Georgia,serif;background:#35452e url('/recommend/linen.jpg');}
+.world[data-theme=field] .nav,.world[data-theme=field] .themes {color:#fff2cd;}
+.world[data-theme=field] .plate {justify-content:center;flex-direction:column;padding:1rem;}
+.world[data-theme=field] .plate h1 {background:#efe1bd;border:6px double #776748;padding:.3rem 1.8rem;font-style:italic;font-size:clamp(3rem,6vw,7rem);}
+.world[data-theme=field] .signature {color:#fff2cd;}
+.world[data-theme=field] .display,.world[data-theme=field] .controls {border:12px ridge #82633f;background:#e8d9b7;}
+.world[data-theme=field] .controls {border-top:0;} .world[data-theme=field] .scene {height:clamp(14rem,34vh,24rem);}
+.world[data-theme=field] .scene[data-alt="1"] .art {transform:scale(1.45);}
+.world[data-theme=field] .art {transition:transform .7s ease;}
+/* Italian one-sheet, film perforations and a ticket window. */
+.world[data-theme=cinema] {--paper:#a42617;--ink:#ffdfac;--accent:#a42817;--display:"DIN Condensed",Impact,sans-serif;background:#a42617;}
+.world[data-theme=cinema] .machine {background:url('/recommend/cinema.jpg') right top/auto 78% no-repeat;}
+.world[data-theme=cinema] .plate {min-height:30vh;align-items:flex-start;}
+.world[data-theme=cinema] .plate h1 {max-width:6ch;font-size:clamp(4rem,9vw,11rem);text-transform:uppercase;transform:skew(-7deg);text-shadow:3px 2px #81190e;}
+.world[data-theme=cinema] .signature {background:#381d17;padding:.4rem;}
+.world[data-theme=cinema] .display {background:#2d211b;transform:rotate(-1deg);}
+.world[data-theme=cinema] .scene {height:clamp(10rem,21vh,15rem);background:url('/recommend/film.jpg') center/cover;}
+.world[data-theme=cinema] .scene img {opacity:0;}
+.world[data-theme=cinema] .scene[data-play=true] {animation:reel .85s steps(5);}
+@keyframes reel {0%{background-position:0% center}100%{background-position:150% center;background-size:auto 115%}}
+.world[data-theme=cinema] .controls {background:#a42617;} .world[data-theme=cinema] .send {border:6px double;border-inline:8px dotted;border-radius:0;text-transform:uppercase;}
+/* Torn cover sheet, taped collage and a highlighter-strip key. */
+.world[data-theme=zine] {--paper:#d9eb60;--ink:#191a18;--accent:#d9ed36;--key:#151713;--display:"Arial Black",Impact,sans-serif;background:#ede6d3;}
+.world[data-theme=zine] .machine {background:#d8ec52;border:3px solid;box-shadow:7px 7px;}
+.world[data-theme=zine] .plate {color:#151612;transform:rotate(-2deg);}
+.world[data-theme=zine] .plate h1 {background:#eee7d8;padding:.4rem 1rem;text-transform:uppercase;clip-path:polygon(1% 4%,98% 0,100% 92%,70% 96%,40% 93%,0 100%);}
+.world[data-theme=zine] .display {grid-template-columns:minmax(13rem,.66fr) minmax(0,1.6fr);}
+.world[data-theme=zine] .scene {grid-column:2;grid-row:1;}
+.world[data-theme=zine] .collection {grid-column:1;grid-row:1;background:#f2eadd;transform:rotate(2deg);}
+.world[data-theme=zine] .scene[data-alt="1"] .art {transform:rotate(-3deg) scale(1.16);filter:contrast(1.3);}
+.world[data-theme=zine] .controls {background:#efe8d6;}
+.world[data-theme=zine] .send {transform:rotate(-2deg);border:0;border-bottom:5px solid;text-transform:uppercase;box-shadow:4px 3px #171717;}
+@media(max-width:700px) {
+ .nav{font-size:.74rem;} .machine{margin-top:1rem;}
+ .world .machine .plate{padding:1rem .85rem;} .plate h1{font-size:clamp(2.9rem,12vw,4.6rem);}
+ .world .machine .display{display:flex;flex-direction:column;align-items:stretch;}
+ .world .machine .collection{align-self:stretch;padding:1.25rem 1rem;}
+ .collection h2{font-size:1.65rem;margin:.3rem 0;} .collection p{font-size:.95rem;}
+ .world .controls{display:block;padding:1rem .85rem;} .keys{margin-top:.9rem;}
+ .world[data-theme=orbit] .keys{gap:.7rem;} .world[data-theme=orbit] .send{font-size:clamp(1.55rem,6vw,2.8rem);min-height:5rem;}
+ .world[data-theme=orbit] .scene{height:auto;aspect-ratio:2.1;} .world[data-theme=orbit] .collection{border-left:0;border-top:1px dashed;}
+ .world[data-theme=kissaten] .machine{display:block;padding-left:2.65rem;} .japanese{font-size:1.85rem;}
+ .world[data-theme=kissaten] .scene{height:11rem;} .world[data-theme=kissaten] .plate em{display:inline;}
+ .world[data-theme=miami] .display{align-items:flex-end!important;} .world[data-theme=miami] .collection{max-width:100%;}
+ .world[data-theme=field] .plate h1{font-size:2.5rem;} .world[data-theme=field] .scene{height:9rem;}
+ .world[data-theme=zine] .scene{height:13rem;} .world[data-theme=cinema] .plate{min-height:13rem;}
+ .themes a{font-size:.75rem;} .receipt{display:grid;}
+}
+@media(prefers-reduced-motion:reduce){.world *, .world *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important;}}
+.urlLabel { display:block; font:600 .95rem/1.4 var(--font-hanken),system-ui,sans-serif; }
+.world[data-theme=orbit] .plate {position:relative;}
+.screws {position:absolute;inset:5px;pointer-events:none;background:radial-gradient(circle at 6px 6px,#30322b 1px,#918d79 2px,#d5d1bd 4px,#4a483e 5px,transparent 6px),radial-gradient(circle at calc(100% - 6px) 6px,#30322b 1px,#918d79 2px,#d5d1bd 4px,#4a483e 5px,transparent 6px),radial-gradient(circle at 6px calc(100% - 6px),#30322b 1px,#918d79 2px,#d5d1bd 4px,#4a483e 5px,transparent 6px),radial-gradient(circle at calc(100% - 6px) calc(100% - 6px),#30322b 1px,#918d79 2px,#d5d1bd 4px,#4a483e 5px,transparent 6px);}
+.world[data-theme=orbit] .slot input {background:transparent;border:0;padding:.25rem 0;font:500 1.2rem/1.35 monospace;}
+.world[data-theme=orbit] .urlLabel {font-size:.8rem;}
+.world[data-theme=orbit] .scene[data-play=true]::after {content:"";position:absolute;width:10px;height:10px;border-radius:50%;background:#ffdb98;box-shadow:0 0 12px #fff3bf;offset-path:ellipse(28% 30% at 49% 48%);animation:track 2s ease-in-out both;}
+@keyframes track {from{offset-distance:0%}to{offset-distance:100%}}
+@media(prefers-reduced-motion:reduce){.world[data-theme=orbit] .scene::after{animation:none!important;}}
+.world[data-theme=orbit] .plate h1 em {display:block;white-space:nowrap;}
+.world[data-theme=orbit] .plate h1 {font-size:clamp(2.6rem,4vw,5.7rem);}
+.world[data-theme=orbit] .scene {background:#202724;}
+.world[data-theme=orbit] .scene .art {object-fit:cover;}
+.world[data-theme=cinema] .machine {background-size:auto max(88%,34rem);}
+.world[data-theme=cinema] .plate {min-height:clamp(15rem,36vh,32rem);}
+.world[data-theme=kissaten] .trigger {left:auto;right:.75rem;}
+
+/* Keep each edition's illustration, caption and input grouped on the same axes. */
+.world[data-theme=goblin] .display,
+.world[data-theme=zine] .display { gap:var(--inset); padding:var(--inset); }
+.world[data-theme=goblin] .collection { margin-inline:.4rem; }
+.world[data-theme=field] .display { padding:var(--inset) var(--inset) 0; }
+.world[data-theme=cinema] .controls { padding-block:var(--section-gap); }
+.world[data-theme=kissaten] .machine { column-gap:var(--inset); }
+.world[data-theme=kissaten] .collection { padding:var(--inset); }
+.world[data-theme=miami] .machine { gap:var(--inset); }
+.world[data-theme=orbit] .plate,
+.world[data-theme=orbit] .display { margin-bottom:clamp(.65rem,1.1vw,1rem); }
+@media(max-width:700px) {
+  .world[data-theme=orbit] .machine { padding:.45rem; }
+  .world[data-theme=orbit] .controls { padding:.75rem; }
+  .world[data-theme=orbit] .keys { padding:.25rem; }
+  .world[data-theme=orbit] .slot { padding:.6rem .75rem; }
+  .world[data-theme=field] .display { padding:.6rem .6rem 0; }
+  .themes { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; }
+  .themes a { padding-inline:.45rem; }
+}
