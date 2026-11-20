@@ -23,3 +23,7 @@
 .corner p { margin: 0; padding: 0 .9rem .8rem; font: italic 1.05rem/1.15 Georgia, serif; }
 .sheet { isolation: isolate; }
 .print { position: relative; clip-path: polygon(0 0,100% 0,100% 99%,94% 99.6%,88% 98.8%,79% 99.8%,72% 99.2%,63% 99.7%,53% 98.8%,45% 99.6%,37% 99%,26% 99.8%,16% 99.1%,8% 99.7%,0 99%); }
+
+@media (min-width: 960px) and (min-aspect-ratio: 6/5) {
+  .print img { height: clamp(11rem, min(27vw, 47svh), 45rem); }
+}

@@ -304,7 +304,13 @@
   .world[data-theme] .machine .controls { grid-area: form; align-self: start; display: block; min-width: 0; padding: var(--inset); }
   .world[data-theme] .keys { margin-top: .75rem; gap: .65rem; }
   .world[data-theme] .send { min-height: 3.5rem; font-size: clamp(1.25rem, 2vw, 2.35rem); }
-  .world[data-theme=orbit] .send { min-height: 4.5rem; }
+  .world[data-theme=orbit] .plate h1 { font-size: clamp(2.8rem, 7svh, 6.8rem); }
+  .world[data-theme=orbit] .controls { margin-bottom: 0; }
+  .world[data-theme=orbit] .slot { margin-bottom: 0; }
+  .world[data-theme=orbit] .send { min-height: clamp(3.6rem, 9svh, 7rem); }
+  .themes { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .themes a { gap: clamp(.45rem, .8vw, 1rem); font-size: clamp(.78rem, .91vw, 1.05rem); }
+  .themes span { flex: none; width: clamp(1.85rem, 2.6vw, 3rem); height: auto; aspect-ratio: 1; }
   .world[data-theme=orbit] .vents { position: absolute; bottom: .5rem; left: 1rem; width: 12%; }
   .world[data-theme=field] .plate h1 { font-size: clamp(2rem, 3.8vw, 4rem); }
   .world[data-theme=kissaten] .machine { padding-left: clamp(3.5rem, 6vw, 6rem); }
@@ -324,4 +330,9 @@
   .world[data-theme=orbit] .plate { flex-wrap: wrap; }
   .keys { flex-wrap: wrap; }
   .keys .utility { min-height: 44px; }
+}
+
+@media (min-width: 960px) and (max-height: 740px) and (min-aspect-ratio: 6/5) {
+  .world[data-theme=orbit] .machine .plate { flex-direction: row; align-items: center; justify-content: space-between; }
+  .world[data-theme=orbit] .signature { font-size: clamp(.95rem, 1.8vw, 1.65rem); }
 }
