@@ -268,3 +268,60 @@
 .world[data-theme=goblin] .display {padding:0;}
 .world[data-theme=zine] .display {padding:var(--inset);}
 .world[data-theme=orbit] .scene {height:clamp(13rem,32vh,23rem);}
+
+/* A landscape poster reads across the spread; expanded content flows below it. */
+@media (min-width: 960px) and (min-aspect-ratio: 6/5) {
+  .world {
+    --inset: clamp(.65rem, 1.5svh, 1.15rem);
+    --section-gap: clamp(.75rem, 1.8svh, 1.5rem);
+    display: flex;
+    flex-direction: column;
+  }
+  .world[data-theme] .machine {
+    display: grid;
+    flex: 1 0 auto;
+    grid-template-columns: minmax(0, .88fr) minmax(0, 1.45fr);
+    grid-template-rows: auto auto;
+    grid-template-areas: "title scene" "form scene";
+    align-content: center;
+    align-items: center;
+    gap: var(--inset) clamp(1.2rem, 3vw, 3rem);
+    min-height: 0;
+    padding: var(--inset);
+  }
+  .world[data-theme] .machine .plate {
+    grid-area: title;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: end;
+    justify-content: flex-end;
+    gap: .6rem;
+    min-height: 0;
+    padding: var(--inset);
+  }
+  .world[data-theme] .plate h1 { font-size: clamp(3rem, min(6vw, 9svh), 7rem); }
+  .world[data-theme] .machine .display { grid-area: scene; align-self: center; }
+  .world[data-theme] .machine .controls { grid-area: form; align-self: start; display: block; min-width: 0; padding: var(--inset); }
+  .world[data-theme] .keys { margin-top: .75rem; gap: .65rem; }
+  .world[data-theme] .send { min-height: 3.5rem; font-size: clamp(1.25rem, 2vw, 2.35rem); }
+  .world[data-theme=orbit] .send { min-height: 4.5rem; }
+  .world[data-theme=orbit] .vents { position: absolute; bottom: .5rem; left: 1rem; width: 12%; }
+  .world[data-theme=field] .plate h1 { font-size: clamp(2rem, 3.8vw, 4rem); }
+  .world[data-theme=kissaten] .machine { padding-left: clamp(3.5rem, 6vw, 6rem); }
+  .world[data-theme=kissaten] .display { max-width: min(100%, 69svh); justify-self: center; width: 100%; }
+  .world[data-theme=cinema] .machine .plate { padding-block: 1.4rem; }
+  .world[data-theme=miami] .machine .display { align-self: end; }
+  .gallery { margin-top: .65rem; padding-block: .4rem; }
+}
+
+@media (max-width: 700px) {
+  .world { --gutter: clamp(.7rem, 3vw, 1rem); }
+  .world[data-theme] .machine { min-height: 0; }
+  .slot input:not([hidden]), .note textarea { font-size: max(16px, 1em); }
+  .gallery summary { min-height: 44px; display: flex; align-items: center; }
+  .world[data-theme=kissaten] .machine { padding-left: 1.9rem; }
+  .world[data-theme=kissaten] .japanese { font-size: 1.35rem; }
+  .world[data-theme=orbit] .plate { flex-wrap: wrap; }
+  .keys { flex-wrap: wrap; }
+  .keys .utility { min-height: 44px; }
+}
