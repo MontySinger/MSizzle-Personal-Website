@@ -28,7 +28,7 @@
 .switchRow i { width: 1.25rem; height: .65rem; border: 1px solid currentColor; border-radius: 1rem; display: flex; align-items: center; padding: 1px; box-sizing: content-box; }
 .switchRow i::after { content: ""; background: currentColor; width: .63rem; height: .63rem; border-radius: 50%; transition: transform .2s; }
 .scene[data-lit="true"] i::after { transform: translateX(.62rem); color: #9fffe0; }
-:global([data-theme="miami"]):has(.scene) { background-blend-mode: multiply; background-color: white; transition: background-color .65s ease; }
+:global([data-theme="miami"]):has(.scene[data-lit]) { background-blend-mode: multiply; background-color: white; transition: background-color .65s ease; }
 :global([data-theme="miami"]):has(.scene[data-lit="false"]) { background-color: #756993; }
 :global([data-theme="miami"]):has(.scene[data-lit="false"]) h1 { text-shadow: none; }
 @media(max-width: 680px) { .scene { min-height: 10rem; padding-inline: .25rem; } }
