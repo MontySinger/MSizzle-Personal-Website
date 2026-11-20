@@ -35,7 +35,7 @@ export function SiteHeader() {
         <Link
           href="/"
           onClick={closeDrawer}
-          className="text-base font-normal uppercase tracking-widest md:text-[22px] md:font-bold md:normal-case md:tracking-tight"
+          className="inline-flex items-center leading-none text-base font-normal uppercase tracking-widest md:text-[22px] md:font-bold md:normal-case md:tracking-tight"
         >
           Monty Singer
         </Link>
