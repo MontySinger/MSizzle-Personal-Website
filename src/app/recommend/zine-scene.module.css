@@ -1,0 +1,15 @@
+.press { width: 100%; min-width: 0; grid-column: 1/-1; margin: 0; color: #191a18; }
+.sheet { overflow: hidden; background: #eee9d8; border: 2px solid currentColor; }
+.print, .print img { display: block; width: 100%; }
+.print { animation: pull .36s ease-out both; }
+.print img { height: clamp(12rem, 27vw, 29rem); object-fit: cover; object-position: center; }
+.desk { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1rem; padding-top: .65rem; font: bold .82rem/1.1 "Courier New", monospace; }
+.proof { display: inline-flex; align-items: center; gap: .2rem; background: #f5eedc; padding: .4rem .65rem; transform: rotate(-1deg); }
+.proof i { width: .7rem; height: .7rem; border: 1px solid currentColor; }
+.proof span { margin-left: .35rem; }
+.desk button { font: inherit; color: #fff9e7; background: #20211d; border: 1px solid currentColor; padding: .55rem .85rem; min-height: 44px; cursor: pointer; }
+.desk button:hover { color: #efff83; }
+.desk button:focus-visible { outline: 3px solid #141510; outline-offset: 2px; }
+@keyframes pull { from { transform: translateY(-4%) rotate(-.5deg); opacity: .65; } to { transform: none; opacity: 1; } }
+@media (max-width: 600px) { .print img { height: auto; } }
+@media (prefers-reduced-motion: reduce) { .print { animation: none; } }

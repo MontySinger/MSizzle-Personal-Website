@@ -188,9 +188,18 @@ describe("Pinboard (sketch 012)", () => {
     expect(getComputedStyle(img).opacity).toBe("1");
   });
 
-  it("renders a fallback swatch for an item with no cover", () => {
+  it("renders a category illustration for an item with no cover", () => {
     const { container } = render(<Pinboard items={[make({ id: "b1", type: "Book" })]} />);
-    expect(container.querySelector(".pb-swatch")).not.toBeNull();
+    expect(container.querySelector('img[src="/pinboard/book.svg"]')).not.toBeNull();
+  });
+
+  it("replaces a broken remote cover with the category illustration", () => {
+    const { container } = render(<Pinboard items={[ITEMS[0]]} />);
+    const image = container.querySelector("img")!;
+    fireEvent.error(image);
+    expect(image.getAttribute("src")).toBe("/pinboard/place.svg");
+    fireEvent.load(image);
+    expect(image.style.opacity).toBe("1");
   });
 
   it("includes the note text and an external Open link with safe rel", () => {

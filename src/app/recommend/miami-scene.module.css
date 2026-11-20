@@ -1,0 +1,35 @@
+.scene {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  min-height: clamp(12rem, 26vh, 21rem);
+  padding: clamp(.5rem, 2vw, 1.6rem);
+  box-sizing: border-box;
+}
+.sign {
+  display: grid;
+  justify-items: center;
+  gap: .35rem;
+  min-width: 9.5rem;
+  padding: .9rem 1.05rem .55rem;
+  color: #c5fff7;
+  background: #21182d;
+  border: 2px solid #b4ece6;
+  border-radius: 1rem .35rem 1rem .35rem;
+  box-shadow: inset 0 0 0 3px #2c142c, inset 0 0 0 4px #ba6789, 0 4px 10px #120e20aa;
+  cursor: pointer;
+}
+.sign:focus-visible { outline: 3px solid white; outline-offset: 5px; }
+.script { font: italic 1.45rem/1.1 Georgia, serif; letter-spacing: -.055em; }
+.vacancy { font: 600 .84rem/1.3 Futura, sans-serif; text-transform: uppercase; letter-spacing: .21em; color: #ffbddd; }
+.scene[data-lit="true"] .script { text-shadow: 0 0 6px #2abeb2; }
+.scene[data-lit="true"] .vacancy { text-shadow: 0 0 6px #ff428a, 0 0 13px #fa2569; }
+.switchRow { display: flex; align-items: center; gap: .42rem; font: 500 .67rem/1.5 monospace; color: #ede4e7; border-top: 1px solid #795e70; padding-top: .32rem; margin-top: .2rem; }
+.switchRow i { width: 1.25rem; height: .65rem; border: 1px solid currentColor; border-radius: 1rem; display: flex; align-items: center; padding: 1px; box-sizing: content-box; }
+.switchRow i::after { content: ""; background: currentColor; width: .63rem; height: .63rem; border-radius: 50%; transition: transform .2s; }
+.scene[data-lit="true"] i::after { transform: translateX(.62rem); color: #9fffe0; }
+:global([data-theme="miami"]):has(.scene) { background-blend-mode: multiply; background-color: white; transition: background-color .65s ease; }
+:global([data-theme="miami"]):has(.scene[data-lit="false"]) { background-color: #756993; }
+:global([data-theme="miami"]):has(.scene[data-lit="false"]) h1 { text-shadow: none; }
+@media(max-width: 680px) { .scene { min-height: 10rem; padding-inline: .25rem; } }
+@media(prefers-reduced-motion: reduce) { :global([data-theme="miami"]):has(.scene), .switchRow i::after { transition: none; } }

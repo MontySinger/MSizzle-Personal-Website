@@ -1,8 +1,8 @@
 import styles from "./recommend.module.css";
 
-/** A vector flight display. The sequence counter follows the actual pinboard selection. */
-export function OrbitalDisplay({ sequence, total }: { sequence: number; total: number }) {
-  const entry = total ? String(sequence % total + 1).padStart(2, "0") : "—";
+/** A vector flight display. The sequence counter records actual launches. */
+export function OrbitalDisplay({ sequence, progress = 0 }: { sequence: number; progress?: number }) {
+  const entry = String(sequence).padStart(2, "0");
   return <svg className={styles.flightDisplay} viewBox="0 0 800 320" aria-hidden="true">
     <defs>
       <pattern id="flight-grid" width="32" height="32" patternUnits="userSpaceOnUse">
@@ -36,10 +36,10 @@ export function OrbitalDisplay({ sequence, total }: { sequence: number; total: n
       </g>
     </g>
     <use href="#flight-path" fill="none" stroke="#f8d9a3" strokeWidth="1.5" strokeDasharray="5 4"/>
-    <circle r="5" fill="#ffc883" stroke="#fcf2ce" className={styles.probe}/>
+    <circle r="5" fill="#ffc883" stroke="#fcf2ce" className={styles.probe} style={{offsetDistance: `${(46 + progress) % 100}%`}}/>
     <g fontFamily="monospace" fontSize="13" fill="#dedac0" letterSpacing="1.4">
       <text x="42" y="47">ORBITAL</text>
-      <text x="633" y="234">PINBOARD</text><text x="633" y="258">{entry} / {String(total).padStart(2, "0")}</text>
+      <text x="633" y="234">SEQUENCE</text><text x="633" y="258">{entry}</text>
     </g>
   </svg>;
 }

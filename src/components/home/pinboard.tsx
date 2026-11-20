@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { cardImages, frameSizes } from "@/lib/pinboard-covers";
 import type { LoveItem } from "@/lib/notion-loves";
 
 /**
@@ -114,41 +115,6 @@ function layoutFor(i: number, n: number): Pos {
   return { x, y, r };
 }
 
-/** Muted, on-brand fallback swatches for items with no page cover. */
-const SWATCHES = ["#8f9e86", "#7c93a6", "#b9805f", "#c9a14e", "#a49e93", "#8a6f82"];
-
-// Mirrors globals.css's .pb-media--* slot sizes exactly (quick task
-// 260723-g2q, FIX 1). Thing's height is CSS's min-height floor; actual
-// rendered height is intrinsic/auto per the existing object-fit: contain
-// design and is NOT enforced by this attribute.
-const FRAME_SIZES: Record<LoveItem["type"], { w: number; h: number }> = {
-  Place: { w: 210, h: 150 },
-  Book: { w: 150, h: 210 },
-  Movie: { w: 150, h: 210 },
-  Thing: { w: 200, h: 120 },
-  YouTube: { w: 260, h: 146 },
-};
-
-function coverSrc(item: LoveItem): string | null {
-  // A Watch card whose URL points at a video gets the YouTube thumbnail. When
-  // the URL is a channel (no parseable video id), fall through to the Notion
-  // page cover so a manually-set screenshot still shows instead of a blank swatch.
-  // This thumbnail is external and fixed-size, deliberately excluded from the
-  // ?w= right-sizing below (260723-g2q Task 3).
-  if (item.type === "YouTube" && item.youtubeId) {
-    return `https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg`;
-  }
-  if (!item.cover) return null;
-  // Request roughly 2x the displayed frame width for a crisp retina render,
-  // instead of always pulling the proxy's flat 640px default into a 150-210px
-  // slot. Reuses the same FRAME_SIZES map the fade-in/dimensions logic above
-  // uses, so the two stay in lockstep. These widths (300/300/400/420) stay
-  // well inside the proxy's existing MIN_WIDTH(64)/MAX_WIDTH(1280) server-side
-  // clamp, so no route change is needed here.
-  const retinaW = FRAME_SIZES[item.type].w * 2;
-  return `/api/notion-cover?pageId=${item.id}&w=${retinaW}`;
-}
-
 function tagFor(type: LoveItem["type"]): string {
   if (type === "YouTube") return "Watch";
   if (type === "Book") return "Read";
@@ -158,36 +124,22 @@ function tagFor(type: LoveItem["type"]): string {
 }
 
 function CardFace({ item }: { item: LoveItem }) {
-  const src = coverSrc(item);
+  const sources = cardImages(item);
+  const [attempt, setAttempt] = useState(0);
+  const src = sources[Math.min(attempt, sources.length - 1)];
   const tag = tagFor(item.type);
-  const idx = SWATCHES.length ? Math.abs(hashId(item.id)) % SWATCHES.length : 0;
-  const swatch = SWATCHES[idx];
   const [loaded, setLoaded] = useState(false);
-  const dims = FRAME_SIZES[item.type];
-
-  const media =
-    src != null ? (
-      // Plain img on purpose: external YouTube host + same-origin proxy, decorative,
-      // below the fold. eslint-disable-next-line @next/next/no-img-element
-      <img
-        ref={(image) => {
-          // Cached covers can finish loading before React attaches onLoad.
-          if (image?.complete && image.naturalWidth > 0) setLoaded(true);
-        }}
-        className="pb-img"
-        src={src}
-        alt=""
-        loading="lazy"
-        draggable={false}
-        decoding="async"
-        width={dims.w}
-        height={dims.h}
-        style={{ opacity: loaded ? 1 : 0, transition: "opacity 200ms ease" }}
-        onLoad={() => setLoaded(true)}
-      />
-    ) : (
-      <span className="pb-swatch" style={{ background: swatch }} aria-hidden="true" />
-    );
+  const dims = frameSizes[item.type];
+  const media = <img
+    ref={image => {
+      if (image?.complete && image.naturalWidth > 0) setLoaded(true);
+    }}
+    className="pb-img" src={src} alt="" loading="lazy" draggable={false}
+    decoding="async" width={dims.w} height={dims.h}
+    style={{ opacity: loaded ? 1 : 0, transition: "opacity 200ms ease" }}
+    onLoad={() => setLoaded(true)}
+    onError={() => setAttempt(n => Math.min(n + 1, sources.length - 1))}
+  />;
 
   const note = item.note ? (
     <div className="pb-note">
@@ -274,13 +226,6 @@ function CardFace({ item }: { item: LoveItem }) {
       {note}
     </div>
   );
-}
-
-/** Small stable string hash for deterministic swatch choice. */
-function hashId(id: string): number {
-  let h = 0;
-  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
-  return h;
 }
 
 export function Pinboard({

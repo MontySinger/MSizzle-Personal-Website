@@ -1,0 +1,51 @@
+.viewer {
+  background: #211914;
+  color: #ffe3ad;
+  box-shadow: 0 .35rem .65rem #3e100d4d;
+}
+.strip {
+  display: grid;
+  gap: 3px;
+  padding: clamp(5px, .65vw, 10px);
+  padding-block-end: 0;
+  transition: grid-template-columns .45s cubic-bezier(.22,.74,.28,1);
+}
+.strip[data-frame="0"] { grid-template-columns: 1.45fr 1fr 1fr; }
+.strip[data-frame="1"] { grid-template-columns: 1fr 1.45fr 1fr; }
+.strip[data-frame="2"] { grid-template-columns: 1fr 1fr 1.45fr; }
+.frame {
+  position: relative;
+  min-width: 0;
+  height: clamp(11.5rem, 21vw, 23rem);
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  background: #211914;
+  cursor: pointer;
+}
+.still {
+  position: absolute;
+  inset: 0;
+  background-image: url("/recommend/film.webp");
+  background-size: 300% auto;
+  background-position-y: center;
+  /* Preserve the original film proportions while allowing the aperture to narrow. */
+  width: max(100%, clamp(11.5rem, 21vw, 23rem));
+  left: 50%;
+  transform: translateX(-50%);
+  filter: brightness(.67);
+  transition: filter .32s;
+}
+.frame[aria-pressed="true"] .still,.frame:hover .still { filter: brightness(1); }
+.frame:focus-visible { outline: 3px solid #ffe3ad; outline-offset: -4px; z-index: 1; }
+.number { position:absolute; right:.45rem; bottom:.35rem; padding:.02rem .35rem; color:#ffe8bc; background:#201710; font:600 .75rem/1.5 monospace; }
+.frame[aria-pressed="true"] .number { color: #281c12; background: #f7c474; }
+.transport { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.3rem clamp(.8rem, 1.7vw, 1.6rem); font:600 .82rem/1.4 ui-monospace,monospace; }
+.light { width:.48rem;height:.48rem;display:inline-block;vertical-align:.05em;margin-right:.55rem;background:#e69641;border-radius:50%; }
+.transport button { background:transparent;color:inherit;border:0;border-bottom:1px solid #af9470; min-height:44px; padding:.4rem .1rem; cursor:pointer; }
+@media(max-width:700px){
+  .frame { height:clamp(6.8rem, 27vw, 12rem); }
+  .still { width:max(100%, clamp(6.8rem, 27vw, 12rem)); }
+  .transport { font-size:.76rem; }
+}
+@media(prefers-reduced-motion:reduce){ .strip,.still {transition:none;} }

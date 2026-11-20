@@ -1,0 +1,11 @@
+.drawer { width:100%; background:#dfd1ae; color:#383324; }
+.cabinet { position:relative; cursor:crosshair; width:100%; margin:auto; overflow:hidden; border:1px solid #584a36; }
+.cabinet img { display:block; width:100%; height:auto; user-select:none; }
+.lens { position:absolute; pointer-events:none; border:3px solid #b2985d; border-radius:50%; background:#d0c2a4 url('/recommend/cabinet.webp') no-repeat; box-shadow:0 0 0 2px #453c29,0 4px 9px #291d1977,inset 0 0 12px #5e4d3699; }
+.instruments { display:flex; flex-wrap:wrap; align-items:center; gap:.35rem .6rem; padding:.45rem clamp(.65rem,1.8vw,1.75rem); border-block:1px solid #776b51; }
+.label { margin-right:.5rem; font:italic 1.1rem Georgia,serif; }
+.instruments button { min-height:44px; padding:.3rem .5rem; font:600 .8rem/1.25 ui-monospace,monospace; cursor:pointer; }
+.instruments button[aria-pressed=true] { color:#203721; text-decoration:underline; text-underline-offset:.35rem; }
+.reset { margin-left:auto; font-style:italic; }
+.reset:disabled { opacity:.45; cursor:default; }
+@media(max-width:700px) { .instruments { gap:0 .15rem; } .label {width:100%; margin:.25rem 0 0;} .instruments button{font-size:.75rem;} .reset {margin-left:0;} }
