@@ -106,7 +106,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
       {/* Inset cover image (D-02) — only when post.cover exists */}
       {post.cover && (
-        <div className="relative mx-6 h-[400px] border border-[var(--color-border-strong)] md:mx-40 md:h-[600px]">
+        <div className="relative mx-6 h-[min(48svh,24rem)] border border-[var(--color-border-strong)] md:mx-40 md:h-[min(48svh,30rem)]">
           {/* unoptimized (260723-g2q Task 4, see card-cover.tsx for the full
               reasoning): /api/notion-cover already resizes/webp-encodes
               server-side, so Next's optimizer would just do that work again. */}
@@ -117,7 +117,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             priority
             fetchPriority="high"
             sizes="100vw"
-            className="object-cover"
+            className="object-contain"
             unoptimized
           />
         </div>
