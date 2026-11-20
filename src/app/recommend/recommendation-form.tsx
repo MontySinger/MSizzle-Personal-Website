@@ -2,6 +2,7 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { OrbitalDisplay } from "./orbital-display";
 import { editions } from "./editions";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import styles from "./recommend.module.css";
@@ -14,6 +15,7 @@ export function RecommendationForm({ initialTheme, picks }: { initialTheme?: str
   const selected = pathname.split("/")[2] || query.get("theme") || initialTheme;
   const [theme, name, action] = editions.find(([id]) => id === selected) ?? editions[1];
   useEffect(() => { document.title = name + " · Things I Love"; }, [name]);
+  const illustration = theme === "field" ? "cabinet" : theme === "cinema" ? "film" : theme;
   const [take, setTake] = useState(0);
   const [entry, setEntry] = useState(false);
   const [url, setUrl] = useState("");
@@ -76,7 +78,11 @@ export function RecommendationForm({ initialTheme, picks }: { initialTheme?: str
       </header>
       <div className={styles.display}>
         <button type="button" className={styles.scene} onClick={explore} aria-label={action} data-alt={take % 2} data-play={take > 0}>
-          <img key={theme + take} className={styles.art} src={`/recommend/${({orbit:"crt",field:"cabinet",goblin:"goblin-scene"} as Record<string,string>)[theme] ?? theme}.jpg`} alt="" />
+          {theme === "orbit" ? <OrbitalDisplay key={take} sequence={index} total={picks.length} /> :
+            theme !== "miami" && <picture>
+              <source media="(max-width: 480px) and (max-resolution: 2dppx)" srcSet={`/recommend/${illustration}-850.webp`} />
+              <img key={theme + take} className={styles.art} src={`/recommend/${illustration}.webp`} alt="" />
+            </picture>}
           <i key={theme + "-fx" + take} className={styles.effect} aria-hidden="true" />
           <span className={styles.trigger}>{action} ↻</span>
         </button>
@@ -112,7 +118,7 @@ export function RecommendationForm({ initialTheme, picks }: { initialTheme?: str
     <fieldset id="editions" className={styles.themes}><legend>Choose your edition</legend>
       {editions.map(([id, title]) => <a key={id} href={`/recommend/${id}`} aria-current={theme === id ? "page" : undefined}
         onClick={event => {if(event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return; event.preventDefault(); window.history.pushState(null, "", `/recommend/${id}`); setTake(0);}}>
-        <span aria-hidden="true" style={{ backgroundImage: `url(/recommend/${id}.jpg)` }} />{title}
+        <span aria-hidden="true" style={{ backgroundImage: `url(/recommend/thumbs/${id}.webp)` }} />{title}
       </a>)}
     </fieldset>
   </section>;

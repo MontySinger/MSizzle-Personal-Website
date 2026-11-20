@@ -94,7 +94,7 @@
 .world[data-theme=kissaten] .scene[data-play=true] .effect {inset:8% 18%;border-radius:50%;background:conic-gradient(transparent 75%,#fff9,transparent 96%);animation:spin 1.6s 2 linear;opacity:0;}
 @keyframes spin {from{transform:rotate(0);opacity:.6}to{transform:rotate(360deg);opacity:.6}}
 /* Night on Ocean Drive. The hotel runs behind the whole street sign. */
-.world[data-theme=miami] {--paper:#181531;--ink:#9cffff;--accent:#962464;--display:"Brush Script MT",cursive;background:#19102e url('/recommend/miami.jpg') center/cover;}
+.world[data-theme=miami] {--paper:#181531;--ink:#9cffff;--accent:#962464;--display:"Brush Script MT",cursive;background:#19102e url('/recommend/miami.webp') center/cover;}
 .world[data-theme=miami] .nav,.world[data-theme=miami] .themes {background:#100e26e8;padding-inline:1rem;}
 .world[data-theme=miami] .machine {min-height:73svh;display:flex;flex-direction:column;justify-content:space-between;}
 .world[data-theme=miami] .plate h1 {color:#ffd4f5;font-style:italic;transform:rotate(-5deg);text-shadow:0 0 5px #ff42ab,0 0 15px #f12186,2px 3px #8d174e;}
@@ -117,15 +117,15 @@
 .world[data-theme=field] .art {transition:transform .7s ease;}
 /* Italian one-sheet, film perforations and a ticket window. */
 .world[data-theme=cinema] {--paper:#a42617;--ink:#ffdfac;--accent:#a42817;--display:"DIN Condensed",Impact,sans-serif;background:#a42617;}
-.world[data-theme=cinema] .machine {background:url('/recommend/cinema.jpg') right top/auto 78% no-repeat;}
+.world[data-theme=cinema] .machine {background:url('/recommend/cinema.webp') right top/auto 78% no-repeat;}
 .world[data-theme=cinema] .plate {min-height:30vh;align-items:flex-start;}
 .world[data-theme=cinema] .plate h1 {max-width:6ch;font-size:clamp(4rem,9vw,11rem);text-transform:uppercase;transform:skew(-7deg);text-shadow:3px 2px #81190e;}
 .world[data-theme=cinema] .signature {background:#381d17;padding:.4rem;}
 .world[data-theme=cinema] .display {background:#2d211b;transform:rotate(-1deg);}
-.world[data-theme=cinema] .scene {height:clamp(10rem,21vh,15rem);background:url('/recommend/film.jpg') center/cover;}
-.world[data-theme=cinema] .scene img {opacity:0;}
-.world[data-theme=cinema] .scene[data-play=true] {animation:reel .85s steps(5);}
-@keyframes reel {0%{background-position:0% center}100%{background-position:150% center;background-size:auto 115%}}
+.world[data-theme=cinema] .scene {height:clamp(10rem,21vh,15rem);background:#34271c;}
+.world[data-theme=cinema] .scene img {object-fit:cover;}
+.world[data-theme=cinema] .scene[data-play=true] img {animation:reel .85s steps(5);}
+@keyframes reel {from{transform:scale(1.12) translateX(-4%)}to{transform:scale(1) translateX(0)}}
 .world[data-theme=cinema] .controls {background:#a42617;} .world[data-theme=cinema] .send {border:6px double;border-inline:8px dotted;border-radius:0;text-transform:uppercase;}
 /* Torn cover sheet, taped collage and a highlighter-strip key. */
 .world[data-theme=zine] {--paper:#d9eb60;--ink:#191a18;--accent:#d9ed36;--key:#151713;--display:"Arial Black",Impact,sans-serif;background:#ede6d3;}
@@ -160,9 +160,6 @@
 .screws {position:absolute;inset:5px;pointer-events:none;background:radial-gradient(circle at 6px 6px,#30322b 1px,#918d79 2px,#d5d1bd 4px,#4a483e 5px,transparent 6px),radial-gradient(circle at calc(100% - 6px) 6px,#30322b 1px,#918d79 2px,#d5d1bd 4px,#4a483e 5px,transparent 6px),radial-gradient(circle at 6px calc(100% - 6px),#30322b 1px,#918d79 2px,#d5d1bd 4px,#4a483e 5px,transparent 6px),radial-gradient(circle at calc(100% - 6px) calc(100% - 6px),#30322b 1px,#918d79 2px,#d5d1bd 4px,#4a483e 5px,transparent 6px);}
 .world[data-theme=orbit] .slot input {background:transparent;border:0;padding:.25rem 0;font:500 1.2rem/1.35 monospace;}
 .world[data-theme=orbit] .urlLabel {font-size:.8rem;}
-.world[data-theme=orbit] .scene[data-play=true]::after {content:"";position:absolute;width:10px;height:10px;border-radius:50%;background:#ffdb98;box-shadow:0 0 12px #fff3bf;offset-path:ellipse(28% 30% at 49% 48%);animation:track 2s ease-in-out both;}
-@keyframes track {from{offset-distance:0%}to{offset-distance:100%}}
-@media(prefers-reduced-motion:reduce){.world[data-theme=orbit] .scene::after{animation:none!important;}}
 .world[data-theme=orbit] .plate h1 em {display:block;white-space:nowrap;}
 .world[data-theme=orbit] .plate h1 {font-size:clamp(2.6rem,4vw,5.7rem);}
 .world[data-theme=orbit] .scene {background:#202724;}
@@ -191,3 +188,68 @@
   .themes { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; }
   .themes a { padding-inline:.45rem; }
 }
+
+/* The display uses instrument linework at device resolution, including its moving probe. */
+.flightDisplay {display:block;width:100%;height:100%;background:#172522;}
+.probe { offset-path:path("M132 221C108 175 245 81 394 52S620 49 602 96 453 231 311 253 146 250 132 221Z"); offset-distance:46%; }
+.scene[data-play=true] .probe {animation:flight 2.2s cubic-bezier(.4,0,.25,1) both;}
+@keyframes flight {from{offset-distance:46%}to{offset-distance:146%}}
+.world[data-theme=field] .scene[data-alt="1"] .art {transform:scale(1.18);}
+.world[data-theme=field] .art {object-position:50% 52%;}
+.world[data-theme=goblin] .art {object-fit:cover;}
+.world[data-theme=goblin] .collection {border-width:1.5px;}
+.world[data-theme=zine] .send {box-shadow:2px 3px #171717;}
+.themes a,.utility,.trigger {transition:box-shadow .16s ease,background-color .16s ease;}
+.themes a:hover,.utility:hover,.scene:hover .trigger {box-shadow:inset 0 0 0 1px currentColor;}
+.world .collection h2 {text-wrap:balance;}
+.world .next,.world .nav a {text-underline-offset:.3em;}
+@media(prefers-reduced-motion:reduce){.scene[data-play=true] .probe {animation:none;}}
+/* One-sheet composition: the portrait and the masthead share the same printed field. */
+.world[data-theme=cinema] .machine {background:none;}
+.world[data-theme=cinema] .plate {
+  position:relative; isolation:isolate; align-items:center; overflow:hidden;
+  padding:clamp(1.3rem,3vw,3.4rem); min-height:clamp(18rem,39vh,36rem);
+}
+.world[data-theme=cinema] .plate::before {
+  content:""; position:absolute; z-index:-1; inset:0 0 0 29%;
+  background:url('/recommend/cinema.webp') center 28% / cover no-repeat;
+  clip-path:polygon(14% 0,100% 0,100% 100%,0 100%);
+}
+.world[data-theme=cinema] .plate h1 {font-size:clamp(4.5rem,9vw,10rem);max-width:none;line-height:.81;}
+.world[data-theme=cinema] .plate em {display:block;}
+.world[data-theme=cinema] .signature {align-self:flex-start;color:#ffdfac;}
+.world[data-theme=cinema] .send {
+  box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px currentColor;
+  letter-spacing:.012em;border-inline-width:5px;
+}
+.world[data-theme=field] .display,.world[data-theme=field] .controls {
+  border-color:#72563a;border-width:7px;border-style:solid;
+  box-shadow:inset 0 0 0 2px #ad936b,0 0 0 1px #30281d;
+}
+.world[data-theme=field] .controls {border-top:0;}
+.world[data-theme=field] .plate h1 {border-width:4px;padding:.3em .8em;}
+.world[data-theme=field] .collection {border-left:1px solid #b0a281;}
+.world[data-theme=field] .send,.world[data-theme=kissaten] .send {font-weight:600;}
+.world[data-theme=kissaten] .scene {border-radius:.25rem;box-shadow:0 1px 0 #e4d7aa,0 7px 15px #30251828;}
+.world[data-theme=kissaten] .collection {border-top:1px solid #6f674b;}
+.world[data-theme=zine] .plate h1 {letter-spacing:-.057em;}
+.world[data-theme=zine] .collection {clip-path:polygon(0 2%,25% 0,46% 2%,70% 0,100% 2%,99% 35%,100% 68%,99% 100%,73% 98%,45% 100%,17% 98%,0 100%);}
+.world[data-theme=miami] .plate h1 {text-shadow:0 0 2px #fff4fa,0 0 6px #f540a7,0 0 18px #b91472;}
+.world[data-theme=miami] .collection {background:#15132bee;}
+@media(max-width:700px){
+  .world[data-theme=cinema] .machine .plate {padding:1.3rem .7rem;min-height:13rem;}
+  .world[data-theme=cinema] .plate h1 {font-size:clamp(3.4rem,14vw,5rem);}
+  .world[data-theme=field] .collection {border-left:0;}
+}
+@media(max-width:700px){
+  .world[data-theme=goblin] .scene,.world[data-theme=field] .scene {
+    display:grid; grid-template-rows:auto auto; height:auto; aspect-ratio:auto; text-align:left;
+  }
+  .world[data-theme=goblin] .art,.world[data-theme=field] .art {height:auto;}
+  .world[data-theme=field] .scene[data-alt="1"] .art {transform:scale(1.14);clip-path:inset(6%);}
+  .world[data-theme=goblin] .trigger,.world[data-theme=field] .trigger {
+    position:relative;inset:auto;justify-content:space-between;border:0;border-top:1px solid;
+    min-height:44px;padding:.4rem .85rem;background:var(--paper);z-index:1;
+  }
+}
+.scene picture {display:contents;}
