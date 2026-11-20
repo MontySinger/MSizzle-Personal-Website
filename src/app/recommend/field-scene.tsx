@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { type ReactNode, useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import styles from "./field-scene.module.css";
 
 const details = [
@@ -10,7 +10,7 @@ const details = [
   { name: "Root system", note: "Below the stem, another tree grows upside down.", x: .858, y: .536 },
 ];
 
-export function FieldScene() {
+export function FieldScene({ controls, host }: { controls: ReactNode; host: string }) {
   const cabinet = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 1, height: 1 });
   const [point, setPoint] = useState<{ x: number; y: number } | null>(null);
@@ -45,21 +45,27 @@ export function FieldScene() {
   } : undefined;
 
   return <section className={styles.drawer} aria-label="Specimen drawer">
-    <div className={styles.cabinet} ref={cabinet} onPointerDown={inspect}
-      onPointerMove={event => { if (point && event.pointerType === "mouse") inspect(event); }}>
-      <Image unoptimized src="/recommend/cabinet.webp" alt="A stag beetle beside pressed blossoms, a wing study and a preserved root." width={1983} height={793} draggable={false} />
-      {point && <>
-        <span className={styles.sight} aria-hidden="true" style={{left: point.x * 100 + "%", top: point.y * 100 + "%"}}/>
-        <span className={styles.lens} aria-hidden="true" style={lensStyle}/>
-      </>}
+    <div className={styles.tray}>
+      <div className={styles.cabinet} ref={cabinet} onPointerDown={inspect}
+        onPointerMove={event => { if (point && event.pointerType === "mouse") inspect(event); }}>
+        <Image unoptimized src="/recommend/cabinet.webp" alt="A stag beetle beside pressed blossoms, a wing study and a preserved root." width={1983} height={793} draggable={false} />
+        {point && <>
+          <span className={styles.sight} aria-hidden="true" style={{left: point.x * 100 + "%", top: point.y * 100 + "%"}}/>
+          <span className={styles.lens} aria-hidden="true" style={lensStyle}/>
+        </>}
+      </div>
+      <div className={styles.instruments} role="group" aria-label="Magnifying loupe">
+        <span className={styles.label}>Inspect</span>
+        {details.map(detail => <button type="button" key={detail.name} aria-pressed={selected === detail.name}
+          onClick={() => { setSelected(detail.name); setPoint(detail); }}>{detail.name}</button>)}
+        <button type="button" className={styles.reset} disabled={!point}
+          onClick={() => { setSelected(""); setPoint(null); }}>Put loupe away</button>
+      </div>
+      <div className={styles.annotation} role="status">{details.find(detail => detail.name === selected)?.note}</div>
     </div>
-    <div className={styles.instruments} role="group" aria-label="Magnifying loupe">
-      <span className={styles.label}>Inspect</span>
-      {details.map(detail => <button type="button" key={detail.name} aria-pressed={selected === detail.name}
-        onClick={() => { setSelected(detail.name); setPoint(detail); }}>{detail.name}</button>)}
-      <button type="button" className={styles.reset} disabled={!point}
-        onClick={() => { setSelected(""); setPoint(null); }}>Put loupe away</button>
+    <div className={styles.accession}>
+      <div className={styles.labelholder}><span>{host || "Specimen label"}</span></div>
+      {controls}
     </div>
-    <div className={styles.annotation} role="status">{details.find(detail => detail.name === selected)?.note}</div>
   </section>;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type KeyboardEvent } from "react";
+import { type ReactNode, useRef, useState, type KeyboardEvent } from "react";
 import styles from "./cinema-scene.module.css";
 
 const shots = [
@@ -9,7 +9,7 @@ const shots = [
   "They kiss on the street",
 ];
 
-export function CinemaScene() {
+export function CinemaScene({ controls, host }: { controls: ReactNode; host: string }) {
   const [frame, setFrame] = useState(0);
   const buttons = useRef<Array<HTMLButtonElement | null>>([]);
   function navigate(event: KeyboardEvent<HTMLButtonElement>, index: number) {
@@ -42,6 +42,10 @@ export function CinemaScene() {
     <div className={styles.transport}>
       <span aria-live="polite"><span className={styles.light} aria-hidden="true"/>Frame 0{frame + 1} / 03{frame === 2 && <em className={styles.endTitle} lang="it">Fine.</em>}</span>
       <button type="button" onClick={() => setFrame(n => (n + 1) % shots.length)}>Advance film <span aria-hidden="true">→</span></button>
+    </div>
+    <div className={styles.ticket}>
+      <div className={styles.stub}><span>ADMIT ONE</span><small>{host || "Cinema Club"}</small></div>
+      {controls}
     </div>
   </section>;
 }

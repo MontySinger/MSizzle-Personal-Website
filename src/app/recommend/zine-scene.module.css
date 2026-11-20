@@ -27,3 +27,15 @@
 @media (min-width: 960px) and (min-aspect-ratio: 6/5) {
   .print img { height: clamp(11rem, min(27vw, 47svh), 45rem); }
 }
+
+/* Pasted underneath the collage, the visitor's link becomes its colophon. */
+.pasteup { position:relative; margin:-.45rem .4rem 0; isolation:isolate; border:2px solid #222; border-top:5px solid var(--proof-ink); background:#f6ead4; box-shadow:3px 3px #222; }
+.pasteup::before { content:"";position:absolute;top:-.45rem;left:8%;width:clamp(2rem,8%,5rem);height:.7rem;transform:rotate(-4deg);background:#c2ac73ba;pointer-events:none; }
+.imprint { display:block; width:fit-content; max-width:90%; margin:.35rem .8rem 0 auto; padding:.13rem .55rem; transform:rotate(1deg); color:#171713; background:var(--proof-paper); font:700 .78rem/1.2 ui-monospace,monospace; overflow-wrap:anywhere; }
+.pasteup form { background:transparent!important; padding:0 .75rem .7rem!important; }
+.pasteup input[type=url] { border:0; border-bottom:2px solid #24231e; border-radius:0; color:#181818; background:transparent; font-family:ui-monospace,monospace; }
+.pasteup form button:not([type]),.pasteup button[type=submit] { color:#181818; background:var(--proof-paper); border:2px solid #202018; transform:rotate(-1deg); box-shadow:2px 3px #222; }
+@media(min-width:960px) and (min-aspect-ratio:6/5){
+  .press .pasteup form {display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end;gap:1rem;}
+  .print img {height:clamp(8rem,30svh,31rem);}
+}

@@ -1,9 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { OrbitalDisplay } from "./orbital-display";
 import styles from "./orbital-scene.module.css";
 
-export function OrbitalScene() {
+export function OrbitalScene({ controls, host }: { controls: ReactNode; host: string }) {
   const [start, setStart] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const [flight, setFlight] = useState(0);
@@ -35,6 +35,10 @@ export function OrbitalScene() {
       <button type="button" onClick={start !== null ? () => {setStart(null); setProgress(0);} : launch}>
         {start !== null ? "Abort flight" : flight ? "Launch again ↗" : "Launch sequence ↗"}
       </button>
+    </div>
+    <div className={styles.uplink}>
+      <div className={styles.tape}><i aria-hidden="true" data-locked={Boolean(host)}/><span>Mission control</span><samp title={host}>{host || "Awaiting carrier"}</samp></div>
+      {controls}
     </div>
     {progress === 100 && <details className={styles.slip}>
       <summary>Read ground transmission</summary>

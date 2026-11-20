@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import styles from "./kissaten-player.module.css";
 
 type Phase = "ready" | "cueing" | "playing" | "paused";
 
-function Deck({ phase }: { phase: Phase }) {
+function Deck({ phase, host }: { phase: Phase; host: string }) {
   return <svg className={styles.deck} viewBox="0 0 720 500" role="img" aria-label="Walnut turntable with a vermilion jazz record and a moving silver tonearm">
     <defs>
       <linearGradient id="ks-felt" x2=".8" y2="1" gradientUnits="objectBoundingBox"><stop stopColor="#566044"/><stop offset=".55" stopColor="#3b4533"/><stop offset="1" stopColor="#293024"/></linearGradient>
@@ -32,7 +32,7 @@ function Deck({ phase }: { phase: Phase }) {
       <circle cx="278" cy="244" r="57" fill="#e4cf9a" stroke="#bda879"/>
       <circle cx="278" cy="244" r="49" fill="none" stroke="#b68a57" strokeWidth=".65"/>
       <path d="M225 255q53 18 106 0" fill="none" stroke="#943b27" strokeWidth="1.5"/>
-      <text fill="#383923" fontFamily="Georgia,serif" fontWeight="bold" fontSize="11" letterSpacing="2.2"><textPath href="#ks-label-arc" startOffset="50%" textAnchor="middle">KISSATEN</textPath></text>
+      <text fill="#383923" fontFamily="Georgia,serif" fontWeight="bold" fontSize="11" letterSpacing="2.2"><textPath href="#ks-label-arc" startOffset="50%" textAnchor="middle">{host ? host.slice(0, 15) : "KISSATEN"}</textPath></text>
       <text x="278" y="274" textAnchor="middle" fontFamily="monospace" fontSize="7.5" fill="#514a32">SIDE A · 33⅓</text>
       <path d="M161 100l2 3m166 301 2 1m61-227 1.8 2.6" stroke="#ffd67d" opacity=".74" strokeWidth="1.2"/>
     </g>
@@ -61,7 +61,7 @@ function Deck({ phase }: { phase: Phase }) {
   </svg>;
 }
 
-export function KissatenPlayer() {
+export function KissatenPlayer({ controls, host }: { controls: ReactNode; host: string }) {
   const [phase, setPhase] = useState<Phase>("ready");
   const [sound, setSound] = useState(false);
   const [audioError, setAudioError] = useState(false);
@@ -114,7 +114,13 @@ export function KissatenPlayer() {
   }
 
   return <section className={styles.player} data-phase={phase} aria-label="Kissaten record player">
-    <Deck phase={phase}/>
+    <div className={styles.sleeveFace}>
+      <div className={styles.order}>
+        <div className={styles.catalog}><span>リクエスト</span><span>33⅓ RPM</span></div>
+        {controls}
+      </div>
+      <Deck phase={phase} host={host}/>
+    </div>
     <div className={styles.transport}>
       <button type="button" onClick={togglePlay}><span aria-hidden="true">{phase === "paused" ? "▶" : "Ⅱ"}</span>{phase === "paused" ? "Play record" : "Pause record"}</button>
       <span className={styles.status} role="status">{audioError ? "Audio unavailable" : phase === "cueing" ? "Cueing side A" : phase === "paused" ? "At rest" : phase === "playing" ? "Playing side A" : "Side A"}</span>

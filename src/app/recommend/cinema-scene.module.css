@@ -60,3 +60,21 @@
 }
 .endTitle { display: inline-block; margin-left: .75rem; color: #ebbf86; font: italic 1.12rem Georgia,serif; }
 @media(prefers-reduced-motion:reduce){ .rail i {transition:none;} }
+
+/* The ticket is fed directly out of the projector's transport. */
+.ticket { position:relative; display:grid; grid-template-columns:minmax(4.4rem,.22fr) minmax(0,1fr); margin:0 .55rem .6rem; background:#eed1a1; color:#46251a; border:1px solid #9e7552; box-shadow:inset 0 0 0 4px #dfbe8a,inset 0 0 0 5px #a7764b; }
+.viewer { padding-bottom:.1rem; }
+.stub { display:flex; align-items:center; justify-content:center; flex-direction:column; gap:.55rem; text-align:center; border-right:2px dashed #9f704e; padding:.4rem; min-width:0; }
+.stub span { writing-mode:vertical-rl; transform:rotate(180deg); font:900 1.12rem/1 Impact,"Arial Narrow",sans-serif; letter-spacing:.12em; }
+.stub small { max-width:100%; overflow-wrap:anywhere; font:.7rem/1.2 ui-monospace,monospace; }
+.ticket form { background:none!important; padding:.65rem .85rem!important; }
+.ticket input[type=url] { background:transparent; border:0; border-bottom:2px solid #76543e; border-radius:0; font-family:ui-monospace,monospace; }
+.ticket form button:not([type]),.ticket button[type=submit] { background:#7e251c; color:#ffddac; border:3px double #f0d09b; outline:1px solid #8d573d; box-shadow:none; }
+@media(min-width:960px) and (min-aspect-ratio:6/5){.frame{height:clamp(7rem,29svh,20rem);}.still{width:max(100%,clamp(7rem,29svh,20rem));}}
+@media(max-width:480px){.ticket{grid-template-columns:2rem minmax(0,1fr)}.stub {padding:.25rem 0}.stub small{max-height:5.5rem;writing-mode:vertical-rl;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ticket form{padding:.6rem!important}}
+@media(min-width:960px) and (min-aspect-ratio:6/5){
+  .viewer .ticket form {display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:.75rem;align-items:end;}
+  .stub {gap:.15rem;}
+  .stub span {writing-mode:horizontal-tb;transform:none;font-size:.9rem;}
+}
+.ticket form button[type=button] {color:#562b1c;background:#f2d8b6;border:1px solid #845d3e;}

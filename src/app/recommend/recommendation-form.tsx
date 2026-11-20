@@ -14,6 +14,16 @@ import { editions } from "./editions";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import styles from "./recommend.module.css";
 
+const instruments = {
+  kissaten: { label: "Request a side for Monty", receipt: "Your request is in Monty’s inbox." },
+  goblin: { label: "What’s on the menu for Monty?", receipt: "Order delivered to Monty’s inbox." },
+  miami: { label: "Leave a link at the night desk", receipt: "The night desk delivered your message to Monty." },
+  field: { label: "Catalogue a find for Monty", receipt: "Your specimen card reached Monty’s inbox." },
+  cinema: { label: "Admit one recommendation", receipt: "Ticket issued and delivered to Monty." },
+  orbit: { label: "Uplink address", receipt: "Transmission received in Monty’s inbox." },
+  zine: { label: "Paste a link into the master copy", receipt: "Your edition reached Monty’s inbox." },
+};
+
 export function RecommendationForm({ initialTheme, cards }: { initialTheme?: string; cards: FavoriteCard[] }) {
   const pathname = usePathname();
   const query = useSearchParams();
@@ -60,7 +70,34 @@ export function RecommendationForm({ initialTheme, cards }: { initialTheme?: str
 
 
 
-  return <section className={styles.world} data-theme={theme}>
+  let host = "";
+  try {
+    const parsed = new URL(url);
+    if (["http:", "https:"].includes(parsed.protocol)) host = parsed.hostname.replace(/^www\./, "");
+  } catch { /* An unfinished address stays editable. */ }
+
+  const controls = <form className={styles.controls} onSubmit={submit}>
+        {status === "sent" ? <div className={styles.receipt} role="status">
+          <strong>{instruments[theme].receipt}</strong>
+          <button type="button" onClick={() => {setStatus("ready"); setNoteOpen(false); setUrl(""); setNote("");}}>Send another ↗</button>
+        </div> : <>
+          <div className={styles.slot}>
+            <label className={styles.urlLabel}>{instruments[theme].label}
+              <input ref={input} name="url" value={url} onChange={e=>setUrl(e.target.value)} type="url" required maxLength={2048} placeholder="Paste a link…" aria-label="Link to your favorite" />
+            </label>
+            <input hidden name="website" tabIndex={-1} autoComplete="off"/>
+            <label hidden={!noteOpen} className={styles.note}>Why would I like it?<textarea id="recommendation-note" ref={noteInput} name="note" maxLength={500} rows={2} value={note} onChange={e=>setNote(e.target.value)}/></label>
+            {error && <p role="alert">{error}</p>}
+          </div>
+          <div className={styles.keys}>
+            <button className={styles.send} disabled={status === "sending"}>{status === "sending" ? "Sharing…" : "Share with Monty"}</button>
+            <button className={styles.utility} type="button" aria-controls="recommendation-note" aria-expanded={noteOpen} onClick={() => setNoteOpen(!noteOpen)}>Note {noteOpen ? "−" : "+"}</button>
+          </div>
+        </>}
+      </form>;
+  const sceneProps = { controls, host };
+
+  return <section className={styles.world} data-theme={theme} data-instrument="" data-status={status}>
     <nav className={styles.nav} aria-label="Pinboard navigation">
       <Link href="/#loves">← Monty’s pinboard</Link>
       <a href="#editions">Editions ↓</a>
@@ -73,33 +110,15 @@ export function RecommendationForm({ initialTheme, cards }: { initialTheme?: str
         <div className={styles.signature}><strong>{name}</strong><i aria-hidden="true"/></div>
       </header>
       <div className={styles.display}>
-        {theme === "kissaten" ? <KissatenPlayer /> :
-          theme === "orbit" ? <OrbitalScene /> :
-          theme === "cinema" ? <CinemaScene /> :
-          theme === "goblin" ? <GoblinScene onFeed={() => input.current?.focus()} /> :
-          theme === "field" ? <FieldScene /> :
-          theme === "miami" ? <MiamiScene /> :
-          <ZineScene />}
+        {theme === "kissaten" ? <KissatenPlayer {...sceneProps} /> :
+          theme === "orbit" ? <OrbitalScene {...sceneProps} /> :
+          theme === "cinema" ? <CinemaScene {...sceneProps} /> :
+          theme === "goblin" ? <GoblinScene {...sceneProps} onFeed={() => input.current?.focus()} /> :
+          theme === "field" ? <FieldScene {...sceneProps} /> :
+          theme === "miami" ? <MiamiScene {...sceneProps} /> :
+          <ZineScene {...sceneProps} />}
       </div>
-      <form className={styles.controls} onSubmit={submit}>
-        {status === "sent" ? <div className={styles.receipt} role="status">
-          <strong>Your recommendation is in my inbox.</strong>
-          <button type="button" onClick={() => {setStatus("ready"); setNoteOpen(false); setUrl(""); setNote("");}}>Send another ↗</button>
-        </div> : <>
-          <div className={styles.slot}>
-            <label className={styles.urlLabel}>What’s something you love that I should see?
-              <input ref={input} name="url" value={url} onChange={e=>setUrl(e.target.value)} type="url" required maxLength={2048} placeholder="Paste a link…" aria-label="Link to your favorite" />
-            </label>
-            <input hidden name="website" tabIndex={-1} autoComplete="off"/>
-            <label hidden={!noteOpen} className={styles.note}>Why would I like it?<textarea id="recommendation-note" ref={noteInput} name="note" maxLength={500} rows={2} value={note} onChange={e=>setNote(e.target.value)}/></label>
-            {error && <p role="alert">{error}</p>}
-          </div>
-          <div className={styles.keys}>
-            <button className={styles.send} disabled={status === "sending"}>{status === "sending" ? "Sharing…" : "Share with Monty"}</button>
-            <button className={styles.utility} type="button" aria-controls="recommendation-note" aria-expanded={noteOpen} onClick={() => setNoteOpen(!noteOpen)}>Note {noteOpen ? "−" : "+"}</button>
-          </div>
-        </>}
-      </form>
+
       {theme === "orbit" && <div className={styles.vents} aria-hidden="true"/>}
     </div>
     <fieldset id="editions" className={styles.themes}><legend>Choose your edition</legend>

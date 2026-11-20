@@ -75,3 +75,25 @@
 .scene[data-lit="false"] .sign { border-color: #887585; }
 .scene[data-lit="false"] .script { color: #9a919a; text-shadow: 0 1px 1px #070609; }
 .scene[data-lit="false"] .vacancy { color: #a38994; text-shadow: 0 1px 1px #070609; }
+
+.scene {display:grid;grid-template-columns:auto minmax(0,1fr);align-items:end;gap:.4rem .8rem;max-width:54rem;padding:clamp(.6rem,1.5vw,1.7rem);margin:auto;}
+.sign {align-self:center;justify-self:end;}
+.marquee {position:relative;background:#193044;border:3px solid #b5e3dd;border-radius:.5rem;padding:.55rem;box-shadow:inset 0 0 0 2px #365369,0 0 0 2px #32495b,0 .4rem .5rem #17102770;}
+.scene[data-lit=true] .marquee {box-shadow:inset 0 0 0 2px #365369,0 0 0 2px #5d8d94,0 0 10px #6fe3e694;}
+.letters {display:flex;align-items:center;justify-content:space-between;gap:.65rem;border:2px inset #e5dac6;background:repeating-linear-gradient(#f4ecda 0 46%,#baac96 48% 51%,#f4ecda 53% 100%);padding:.55rem .65rem;color:#192c42;font:700 .8rem/1.35 ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;}
+.letters strong {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;color:#96365f;}
+.marquee form {background:transparent!important;border:0!important;color:#fff2e0;}
+.marquee input[type=url] {border:2px inset #b3d1cd!important;border-radius:.22rem!important;background:#ede8d9!important;color:#231633!important;}
+.scene .desk {grid-column:2;}
+@media(max-width:700px){.scene{grid-template-columns:1fr;align-content:end;}.scene .sign{justify-self:start;min-width:8rem;font-size:.8rem;}.marquee{width:100%;}.scene .desk{grid-column:1;}.letters{font-size:.67rem;}}
+.scene { position:relative;isolation:isolate;grid-template-columns:auto minmax(0,1fr);column-gap:0; }
+.marquee {z-index:1;align-self:center; }
+.scene .sign {border-radius:.8rem 0 0 .8rem;margin-left:0;margin-right:-2px;z-index:2; border-right:0;}
+.sign::before,.sign::after {left:auto;right:-.55rem;width:.6rem;background:#8c9198;border-color:#cfccd5;box-shadow:1px 2px 0 #161e2a;}
+.scene .desk {margin-top:.3rem;}
+@media(max-width:700px) {
+  .scene {grid-template-columns:1fr;row-gap:0;}
+  .scene .sign {justify-self:start;margin:0 0 -.12rem .7rem;border-radius:.8rem .8rem 0 0;border-right:2px solid #b6fff9;border-bottom:0;}
+  .sign::before,.sign::after {height:.4rem;width:.28rem;top:auto;bottom:-.3rem;right:auto;left:18%; }
+  .sign::after {left:80%;}
+}

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import styles from "./goblin-scene.module.css";
 
 /** Hand-inked scene elements stay separate from the transparent character. */
-export function GoblinScene({ onFeed }: { onFeed?: () => void }) {
+export function GoblinScene({ onFeed, controls, host }: { onFeed?: () => void; controls: ReactNode; host: string }) {
   const [bites, setBites] = useState(0);
   function feed() {
     setBites(count => count + 1);
@@ -33,6 +33,7 @@ export function GoblinScene({ onFeed }: { onFeed?: () => void }) {
         <img className={styles.character}
           src="/recommend/goblin/link-goblin.png" width={1200} height={760}
           alt="The original blue Link Goblin, twirling a URL-shaped noodle over a plate of spaghetti." />
+        {host && <span className={styles.noodleTag} aria-hidden="true">{host}</span>}
         {bites > 0 && <svg key={bites} viewBox="0 0 400 253" className={styles.bite} aria-hidden="true">
           <path className={styles.strand} pathLength="1" d="M122 115 C119 163 124 171 155 160 S200 147 210 127 S225 108 239 107" />
           <path className={styles.link} d="m-4 1 3-3m0 5 3-3m-6 2-1 1a2 2 0 0 1-3-3l3-3a2 2 0 0 1 3 0m2 1 1-1a2 2 0 0 1 3 3l-3 3a2 2 0 0 1-3 0" />
@@ -41,6 +42,10 @@ export function GoblinScene({ onFeed }: { onFeed?: () => void }) {
         </div>
       </div>
       <figcaption className={styles.caption}>
+        <div className={styles.ticket}>
+          <div className={styles.check}><strong>Guest check</strong><span>Goblin’s kitchen</span></div>
+          {controls}
+        </div>
         <button type="button" className={styles.feed} onClick={feed}>
           Feed him a link <span aria-hidden="true">↗</span>
         </button>

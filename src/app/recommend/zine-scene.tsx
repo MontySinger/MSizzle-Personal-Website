@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import styles from "./zine-scene.module.css";
 
 const printRuns = [
@@ -9,7 +9,7 @@ const printRuns = [
   { name: "Black copy", paper: "#eee9d8", ink: "#22231e", filter: "grayscale(1) contrast(1.45)" },
 ];
 
-export function ZineScene() {
+export function ZineScene({ controls, host }: { controls: ReactNode; host: string }) {
   const [pulls, setPulls] = useState(0);
   const run = pulls % printRuns.length;
   const current = printRuns[run];
@@ -29,6 +29,10 @@ export function ZineScene() {
             <p>The pin held. Make a copy for a friend.</p>
           </details>
         )}
+      </div>
+      <div className={styles.pasteup} style={{ "--proof-ink": current.ink, "--proof-paper": current.paper } as React.CSSProperties}>
+        <span className={styles.imprint}>{host || "Paste-up"}</span>
+        {controls}
       </div>
       <figcaption className={styles.desk}>
         <span className={styles.proof} aria-live="polite">
