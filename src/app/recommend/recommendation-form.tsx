@@ -108,7 +108,7 @@ export function RecommendationForm({ initialTheme, picks }: { initialTheme?: str
             {error && <p role="alert">{error}</p>}
           </div>
           <div className={styles.keys}>
-            <button className={styles.send} disabled={status === "sending"}>{status === "sending" ? "Sending…" : entry || url ? "Send to Monty" : "Add to pinboard"}</button>
+            <button className={styles.send} disabled={status === "sending"}>{status === "sending" ? "Sharing…" : "Share with Monty"}</button>
             <button className={styles.utility} type="button" aria-expanded={noteOpen} onClick={() => {setEntry(true); setNoteOpen(!noteOpen);}}>Note {noteOpen ? "−" : "+"}</button>
           </div>
         </>}
