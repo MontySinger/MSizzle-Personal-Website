@@ -5,11 +5,11 @@ import type { LoveItem } from "@/lib/notion-loves";
 import styles from "./bookshelf.module.css";
 
 const bindings = [
-  { paper: "#e8d7b6", cloth: "#345c53", height: 178 },
-  { paper: "#f7e1af", cloth: "#a55936", height: 195 },
-  { paper: "#f5dfaa", cloth: "#9a772e", height: 205 },
-  { paper: "#e5d9bb", cloth: "#354965", height: 166 },
-  { paper: "#f6e3bc", cloth: "#733c40", height: 190 },
+  { paper: "#ffffff", cloth: "#008fa6", height: 178 },
+  { paper: "#fff9ed", cloth: "#ee5037", height: 195 },
+  { paper: "#3d3013", cloth: "#f5cb21", height: 205 },
+  { paper: "#ffffff", cloth: "#2859e0", height: 166 },
+  { paper: "#fff7ed", cloth: "#cf3283", height: 190 },
 ];
 
 export function BookShelf({ items }: { items: LoveItem[] }) {
