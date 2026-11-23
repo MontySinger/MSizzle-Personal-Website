@@ -161,7 +161,7 @@ export function CarryShelf() {
           onKeyDown={e => {
             const direction = { ArrowLeft: [-30, 0], ArrowRight: [30, 0], ArrowUp: [0, -45], ArrowDown: [0, 40] }[e.key];
             if (direction) { e.preventDefault(); const b = bodies.current[i]; if (!b) return; b.x = Math.max(0, Math.min(size.current.w - item.width * size.current.scale, b.x + direction[0])); b.y = Math.max(0, b.y + direction[1]); b.vy = 0; }
-          }}><span className={styles.sprite} style={{backgroundImage:"url(/current-carry/"+(i === 4 ? "white-shoes" : i >= 10 ? ["darn-tough", "giver", "winter-3"][i-10] : "voxel-"+i)+".webp)"}}/><span className={styles.objectShadow}/></button>)}
+          }}><span className={styles.sprite} style={{backgroundImage:"url(/current-carry/"+(i === 4 ? "white-shoes" : i >= 10 ? ["darn-tough-mark", "giver-mark", "winter-3"][i-10] : "voxel-"+i)+".webp)"}}/><span className={styles.objectShadow}/></button>)}
         {selected !== null && <div ref={popup} id="carry-note" className={styles.note} role="region" aria-label={items[selected].name + " details"}>
           <div className={styles.noteBar}><span>INSPECT OBJECT</span><button onClick={() => choose(null)} aria-label="Close item details">×</button></div>
           <div className={styles.noteBody}><small>{items[selected].kind}</small><h2>{items[selected].name}</h2><p>{items[selected].note}</p>
