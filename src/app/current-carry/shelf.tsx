@@ -95,7 +95,7 @@ export function CarryShelf() {
         const x = Math.max(8, Math.min(w - pw - 8, b.x + items[id].width * scale + 12));
         const overlapsObject = x < b.x + items[id].width * scale && x + pw > b.x;
         const desiredY = overlapsObject ? (b.y > ph + 12 ? b.y - ph - 12 : b.y + items[id].height * scale + 12) : b.y - 20;
-        const y = Math.max(8, Math.min(h - ph - 8, desiredY));
+        const y = Math.max(8, overlapsObject ? desiredY : Math.min(h - ph - 8, desiredY));
         card.style.transform = "translate(" + x + "px," + y + "px)";
       }
       frame = requestAnimationFrame(tick);
@@ -105,7 +105,7 @@ export function CarryShelf() {
     // Resize rebuilds the shelf in its original arrangement.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return <section id="current-carry" aria-label="Things I keep close" className={styles.room}>
+  return <section id="current-carry" aria-label="Things I keep close" className={styles.room} data-inspecting={selected !== null}>
     <div className={styles.cabinet} data-light={light}>
       <div ref={stage} className={styles.stage} onKeyDown={e => { if (e.key === "Escape") choose(null); }}>
         {platforms.map((s, i) => <div key={i} className={styles.shelf} aria-hidden="true" style={{ left: s.x * 100 + "%", width: (s.end - s.x) * 100 + "%", top: s.y * 100 + "%" }}></div>)}

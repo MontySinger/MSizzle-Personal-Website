@@ -28,3 +28,5 @@
 .base button:hover {color:#3a2b1d;}
 @media(max-width:600px){.room{padding:2rem .65rem;}.stage{height:350px;}.note{width:210px;}.noteBody p{font-size:11px;}.noteBody h2{font-size:1.15rem;}}
 @media(prefers-reduced-motion:reduce){.stage::after{transition:none}}
+.stage {overflow:visible;}
+@media(max-width:600px){.room[data-inspecting=true]{padding-bottom:10rem;}}
