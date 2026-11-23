@@ -77,7 +77,7 @@ export function ExplorativeHomepage({
         <SectionLoves items={loves} categoryOrder={loveCategories} />
       </section>
 
-      <CarryShelf />
+      <CarryShelf books={loves.filter(item => item.type === "Book" && item.published)} />
 
       <SectionAdvice accentIndex={adviceAccentIndex} />
 

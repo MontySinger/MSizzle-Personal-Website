@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import styles from "./shelf.module.css";
+import { BookShelf } from "./bookshelf";
+import type { LoveItem } from "@/lib/notion-loves";
 
 const items = [
   { name: "The gym gloves", kind: "An unexpected upgrade", note: "I use gardening gloves as lifting gloves. The blue and gray ones with the honeycomb grip.", url: "https://www.homedepot.com/p/318748411", extra: "https://www.youtube.com/shorts/opRpbsIFdMw", label: "Watch the glove test", width: 89, height: 92, mass: .7 },
@@ -20,7 +22,7 @@ const items = [
 ];
 type Body = { x: number; y: number; vx: number; vy: number; angle: number; spin: number; readyAt: number };
 const platforms = [{ x: .07, end: .9, y: .32 }, { x: 0, end: 1, y: .64 }, { x: .07, end: .99, y: .96 }];
-export function CarryShelf() {
+export function CarryShelf({ books = [] }: { books?: LoveItem[] }) {
   const stage = useRef<HTMLDivElement>(null);
   const nodes = useRef<(HTMLButtonElement | null)[]>([]);
   const popup = useRef<HTMLDivElement>(null);
@@ -172,6 +174,7 @@ export function CarryShelf() {
         </div>}
       </div>
       <div className={styles.base}><button onClick={() => reset()} aria-label="Reset shelf">↺</button></div>
+      <BookShelf items={books} />
     </div>
 
   </section>;
