@@ -4,3 +4,5 @@
 .headband,.tailband {position:absolute;left:2px;right:2px;height:4px;border-block:1px solid currentColor;opacity:.65;}
 .headband {top:5px;}.tailband {bottom:6px;}
 @media(prefers-reduced-motion:reduce){.binding{transition:none;}}
+.binding[data-rounded=true] {border-radius:3px 6px 1px 1px;border-right-width:3px;}
+.binding[data-rounded=false]::before {content:"";position:absolute;top:1px;left:1px;right:1px;height:2px;background:#fff9e6;opacity:.6;}

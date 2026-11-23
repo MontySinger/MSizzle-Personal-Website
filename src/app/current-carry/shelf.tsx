@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import styles from "./shelf.module.css";
-import { BookSpine, bookHeight } from "./bookshelf";
+import { BookSpine, bookBinding } from "./bookshelf";
+import { ShelfPhoto } from "./shelf-photo";
+import photos from "./shelf-photos.json";
 import type { LoveItem } from "@/lib/notion-loves";
 
 const objects = [
@@ -20,17 +22,17 @@ const objects = [
   { name: "Give’r gloves", kind: "The leather pair", note: "Give’r gloves.", url: "", extra: "", label: "", width: 80, height: 86, mass: .8 },
   { name: "Electric heated mittens", kind: "A little extra warmth", note: "Electric heated mittens.", url: "", extra: "", label: "", width: 80, height: 90, mass: .9 },
 ];
-type ShelfItem = (typeof objects)[number] & { book?: LoveItem; bookIndex?: number };
+type ShelfItem = (typeof objects)[number] & { book?: LoveItem; linkLabel?: string };
 const noBooks: LoveItem[] = [];
 type Body = { x: number; y: number; vx: number; vy: number; angle: number; spin: number; readyAt: number };
 const platforms = [{ x: .07, end: .9, y: .24 }, { x: 0, end: 1, y: .48 }, { x: .07, end: .99, y: .72 }, { x: .07, end: .99, y: .96 }];
 export function CarryShelf({ books = noBooks }: { books?: LoveItem[] }) {
   const items = useMemo<ShelfItem[]>(() => [
-    ...objects,
-    ...books.filter(book => book.published && book.type === "Book").map((book, index) => ({
+    ...objects.map((item, index) => ({ ...item, url: photos[index]?.link || item.url, linkLabel: photos[index]?.linkLabel })),
+    ...books.filter(book => book.published && book.type === "Book").map(book => ({
       name: book.title, kind: book.subtitle, note: book.note, url: book.url,
-      extra: "", label: "", width: 44, height: bookHeight(index), mass: .9,
-      book, bookIndex: index,
+      extra: "", label: "", width: bookBinding(book).width, height: bookBinding(book).height, mass: .9,
+      book,
     })),
   ], [books]);
   const stage = useRef<HTMLDivElement>(null);
@@ -48,12 +50,18 @@ export function CarryShelf({ books = noBooks }: { books?: LoveItem[] }) {
   function reset(drop = false) {
     const { w, h } = size.current;
     const homes = [[.17, 0], [.38, 0], [.17, 1], [.59, 0], [.47, 1], [.17, 2], [.35, 2], [.53, 2], [.71, 2], [.9, 2], [.8, 0], [.7, 1], [.9, 1]];
-    bodies.current = items.map((item, i) => ({
-      x: item.book ? Math.max(8, (w - (items.length - objects.length) * 46) / 2) + (i - objects.length) * 46 : w * homes[i][0] - item.width * scaleFor(i) / 2,
+    const bookItems = items.slice(objects.length);
+    const totalBookWidth = bookItems.reduce((sum, item) => sum + item.width + 2, -2);
+    let bookX = Math.max(8, (w - totalBookWidth) / 2);
+    bodies.current = items.map((item, i) => {
+      const x = item.book ? bookX : w * homes[i][0] - item.width * scaleFor(i) / 2;
+      if (item.book) bookX += item.width + 2;
+      return ({
+      x,
       y: h * platforms[item.book ? 3 : homes[i][1]].y - item.height * scaleFor(i) - (drop ? 48 + i % 3 * 7 : 0),
       vx: 0, vy: 0, angle: drop && !item.book ? (i % 2 ? -5 : 5) : 0, spin: 0,
       readyAt: drop ? performance.now() + i * 65 : 0,
-    }));
+    }); });
     choose(null);
   }
   useEffect(() => {
@@ -188,11 +196,11 @@ export function CarryShelf({ books = noBooks }: { books?: LoveItem[] }) {
           }}
           onPointerCancel={() => { drag.current = null; }}
           onClick={e => { if (e.detail === 0) choose(selectedRef.current === i ? null : i); }}
-          onKeyDown={event => moveWithKeys(event, i)}>{item.book ? <BookSpine book={item.book} index={item.bookIndex!} /> : <span className={styles.sprite} style={{backgroundImage:"url(/current-carry/"+(i === 4 ? "white-shoes" : i >= 10 ? ["darn-tough-mark", "giver-mark", "winter-3"][i-10] : "voxel-"+i)+".webp)"}}/>}<span className={styles.objectShadow}/></button>)}
+          onKeyDown={event => moveWithKeys(event, i)}>{item.book ? <BookSpine book={item.book} /> : <span className={styles.sprite} style={{backgroundImage:"url(/current-carry/"+(i === 4 ? "white-shoes" : i >= 10 ? ["darn-tough-mark", "giver-mark", "winter-3"][i-10] : "voxel-"+i)+".webp)"}}/>}<span className={styles.objectShadow}/></button>)}
         {selected !== null && <div ref={popup} id="carry-note" className={styles.note} role="region" aria-label={items[selected].name + " details"}>
           <div className={styles.noteBar}><span>INSPECT OBJECT</span><button onClick={() => choose(null)} aria-label="Close item details">×</button></div>
-          <div className={styles.noteBody}><small>{items[selected].kind}</small><h2>{items[selected].name}</h2><p>{items[selected].note}</p>
-            {items[selected].url && <a href={items[selected].url} target="_blank" rel="noreferrer">Take a closer look ↗</a>}
+          <div className={styles.noteBody}><ShelfPhoto key={selected} book={items[selected].book} itemIndex={selected} href={items[selected].url} /><small>{items[selected].kind}</small><h2>{items[selected].name}</h2><p>{items[selected].note}</p>
+            {items[selected].url && <a href={items[selected].url} target="_blank" rel="noreferrer">{items[selected].linkLabel || (items[selected].book ? "Explore this book" : "Take a closer look")} ↗</a>}
             {items[selected].extra && <a href={items[selected].extra} target="_blank" rel="noreferrer">{items[selected].label} ↗</a>}
             {selected === 3 && <button className={styles.lightSwitch} onClick={() => setLight(!light)} aria-pressed={light}>Light {light ? "off" : "on"} ↗</button>}
           </div>

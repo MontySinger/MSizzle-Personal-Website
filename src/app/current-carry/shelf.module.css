@@ -41,3 +41,7 @@
 }
 @media(max-width:600px){.stage{height:490px;}}
 @media(prefers-reduced-motion:reduce){.object[data-book=true]:focus-visible [data-book-spine],.object[data-book=true]:hover [data-book-spine]{transform:none;}}
+.object[data-book=true]::before {content:"";position:absolute;inset:0 -4px;}
+.note {max-height:min(460px,80svh);overflow-y:auto;overscroll-behavior:contain;}
+.noteBody > p {max-height:95px;overflow-y:auto;}
+.noteBar {position:sticky;top:0;z-index:1;}
