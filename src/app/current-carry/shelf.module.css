@@ -31,3 +31,13 @@
 .stage {overflow:visible;}
 @media(max-width:600px){.room[data-inspecting=true]{padding-bottom:10rem;}}
 .stage[data-ready=false] .object {visibility:hidden;}
+.stage {height:490px;}
+.object[data-book=true] {perspective:600px;}
+.object[data-book=true][data-selected=true] {filter:none;}
+.object[data-book=true]:focus-visible [data-book-spine] {transform:translateZ(24px) scale(1.1);box-shadow:6px 6px 8px #36261930;}
+@media(hover:hover) and (pointer:fine){
+  .object[data-book=true]:hover {z-index:5;}
+  .object[data-book=true]:hover [data-book-spine] {transform:translateZ(24px) scale(1.1);box-shadow:6px 6px 8px #36261930;}
+}
+@media(max-width:600px){.stage{height:490px;}}
+@media(prefers-reduced-motion:reduce){.object[data-book=true]:focus-visible [data-book-spine],.object[data-book=true]:hover [data-book-spine]{transform:none;}}
