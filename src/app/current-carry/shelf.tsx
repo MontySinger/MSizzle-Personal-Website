@@ -24,14 +24,14 @@ const objects = [
 ];
 type ShelfItem = (typeof objects)[number] & { book?: LoveItem; linkLabel?: string };
 const noBooks: LoveItem[] = [];
-type Body = { x: number; y: number; vx: number; vy: number; angle: number; spin: number; readyAt: number };
+type Body = { x: number; y: number; vx: number; vy: number; angle: number; spin: number; readyAt: number; slideAt: number; slideFrom: number };
 const platforms = [{ x: .07, end: .9, y: .24 }, { x: 0, end: 1, y: .48 }, { x: .07, end: .99, y: .72 }, { x: .07, end: .99, y: .96 }];
 export function CarryShelf({ books = noBooks }: { books?: LoveItem[] }) {
   const items = useMemo<ShelfItem[]>(() => [
     ...objects.map((item, index) => ({ ...item, url: photos[index]?.link || item.url, linkLabel: photos[index]?.linkLabel })),
     ...books.filter(book => book.published && book.type === "Book").map(book => ({
       name: book.title, kind: book.subtitle, note: book.note, url: book.url,
-      extra: "", label: "", width: bookBinding(book).width, height: bookBinding(book).height, mass: .9,
+      extra: "", label: "", width: bookBinding(book).width, height: Math.round(bookBinding(book).height * .8), mass: .9,
       book,
     })),
   ], [books]);
@@ -58,9 +58,11 @@ export function CarryShelf({ books = noBooks }: { books?: LoveItem[] }) {
       if (item.book) bookX += item.width + 2;
       return ({
       x,
-      y: h * platforms[item.book ? 3 : homes[i][1]].y - item.height * scaleFor(i) - (drop ? 48 + i % 3 * 7 : 0),
+      y: h * platforms[item.book ? 3 : homes[i][1]].y - item.height * scaleFor(i) - (drop && !item.book ? 48 + i % 3 * 7 : 0),
       vx: 0, vy: 0, angle: drop && !item.book ? (i % 2 ? -5 : 5) : 0, spin: 0,
-      readyAt: drop ? performance.now() + i * 65 : 0,
+      readyAt: drop && !item.book ? performance.now() + i * 65 : 0,
+      slideAt: drop && item.book ? performance.now() + (i - objects.length) * 65 : 0,
+      slideFrom: item.book ? -24 : 0,
     }); });
     choose(null);
   }
@@ -129,7 +131,10 @@ export function CarryShelf({ books = noBooks }: { books?: LoveItem[] }) {
       }
       bodies.current.forEach((b, i) => {
         const node = nodes.current[i];
-        if (node) node.style.transform = "translate(" + b.x + "px," + b.y + "px) rotate(" + b.angle + "deg)";
+        const progress = b.slideAt ? Math.max(0, Math.min(1, (now - b.slideAt) / 550)) : 1;
+        const slide = b.slideFrom * Math.pow(1 - progress, 3);
+        if (progress === 1) b.slideAt = 0;
+        if (node) node.style.transform = "translate(" + (b.x + slide) + "px," + b.y + "px) rotate(" + b.angle + "deg)";
       });
       const id = selectedRef.current;
       if (id !== null && bodies.current[id] && popup.current) {
@@ -161,7 +166,7 @@ export function CarryShelf({ books = noBooks }: { books?: LoveItem[] }) {
       const next = Math.max(0, Math.min(platforms.length - 1, row + (event.key === "ArrowUp" ? -1 : 1)));
       b.y = h * platforms[next].y - item.height * scale;
     }
-    b.vx = 0; b.vy = 0; b.readyAt = 0;
+    b.vx = 0; b.vy = 0; b.readyAt = 0; b.slideAt = 0;
   }
 
   return <section id="current-carry" aria-label="Things I keep close" className={styles.room} data-inspecting={selected !== null}>
@@ -173,6 +178,7 @@ export function CarryShelf({ books = noBooks }: { books?: LoveItem[] }) {
           onPointerDown={e => {
             if (e.button !== 0) return;
             const b = bodies.current[i]; if (!b) return;
+            b.slideAt = 0;
             e.currentTarget.setPointerCapture(e.pointerId);
             const rect = stage.current!.getBoundingClientRect();
             drag.current = { id: i, dx: e.clientX - rect.left - b.x, dy: e.clientY - rect.top - b.y, startX: e.clientX, startY: e.clientY, moved: false, time: performance.now(), lastX: e.clientX, lastY: e.clientY };
