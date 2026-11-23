@@ -8,15 +8,18 @@ const items = [
   { name: "Ninja CREAMi", kind: "Something worth making room for", note: "One of my favorite things. More from me soon.", url: "", extra: "", label: "", width: 83, height: 112, mass: 2 },
   { name: "Cybertruck", kind: "Parked, for once", note: "A little version of a big favorite. More from me soon.", url: "https://www.tesla.com/cybertruck", extra: "", label: "", width: 138, height: 76, mass: 1.6 },
   { name: "The pocket light", kind: "ALTSON · rechargeable clip-on LED", note: "The little portable light I like. More from me soon.", url: "https://www.amazon.com/dp/B0C2C9QT91", extra: "", label: "", width: 80, height: 89, mass: .9 },
-  { name: "WHITIN barefoot shoes", kind: "Room for your toes", note: "My barefoot shoes.", url: "", extra: "", label: "", width: 112, height: 70, mass: .8 },
+  { name: "WHITIN barefoot shoes", kind: "Room for your toes", note: "My white barefoot shoes.", url: "", extra: "", label: "", width: 112, height: 70, mass: .8 },
   { name: "Strawberry rhubarb pie", kind: "Sweet meets tart", note: "Strawberry rhubarb pie. A favorite.", url: "", extra: "", label: "", width: 85, height: 72, mass: 1 },
   { name: "Warheads", kind: "The sour corner", note: "Warheads candy.", url: "", extra: "", label: "", width: 72, height: 77, mass: .6 },
   { name: "Concord grapes", kind: "A bunch worth keeping", note: "Concord grapes.", url: "", extra: "", label: "", width: 72, height: 74, mass: .7 },
   { name: "Soursop", kind: "Something tropical", note: "Soursop.", url: "", extra: "", label: "", width: 85, height: 73, mass: 1.1 },
   { name: "Mangosteen", kind: "Under the purple shell", note: "Mangosteen.", url: "", extra: "", label: "", width: 73, height: 72, mass: .8 },
+  { name: "Darn Tough socks", kind: "A good pair of socks", note: "Darn Tough socks.", url: "", extra: "", label: "", width: 74, height: 83, mass: .6 },
+  { name: "Give’r gloves", kind: "The leather pair", note: "Give’r gloves.", url: "", extra: "", label: "", width: 80, height: 86, mass: .8 },
+  { name: "Electric heated mittens", kind: "A little extra warmth", note: "Electric heated mittens.", url: "", extra: "", label: "", width: 80, height: 90, mass: .9 },
 ];
 type Body = { x: number; y: number; vx: number; vy: number; angle: number; spin: number; readyAt: number };
-const platforms = [{ x: .07, end: .83, y: .32 }, { x: .07, end: .93, y: .64 }, { x: .07, end: .99, y: .96 }];
+const platforms = [{ x: .07, end: .9, y: .32 }, { x: 0, end: 1, y: .64 }, { x: .07, end: .99, y: .96 }];
 export function CarryShelf() {
   const stage = useRef<HTMLDivElement>(null);
   const nodes = useRef<(HTMLButtonElement | null)[]>([]);
@@ -31,7 +34,7 @@ export function CarryShelf() {
   function choose(id: number | null) { selectedRef.current = id; setSelected(id); }
   function reset(drop = false) {
     const { w, h, scale } = size.current;
-    const homes = [[.2, 0], [.47, 0], [.24, 1], [.72, 0], [.54, 1], [.81, 1], [.18, 2], [.41, 2], [.64, 2], [.86, 2]];
+    const homes = [[.17, 0], [.38, 0], [.17, 1], [.59, 0], [.47, 1], [.17, 2], [.35, 2], [.53, 2], [.71, 2], [.9, 2], [.8, 0], [.7, 1], [.9, 1]];
     bodies.current = items.map((item, i) => ({
       x: w * homes[i][0] - item.width * scale / 2,
       y: h * platforms[homes[i][1]].y - item.height * scale - (drop ? 48 + i % 3 * 7 : 0),
@@ -158,7 +161,7 @@ export function CarryShelf() {
           onKeyDown={e => {
             const direction = { ArrowLeft: [-30, 0], ArrowRight: [30, 0], ArrowUp: [0, -45], ArrowDown: [0, 40] }[e.key];
             if (direction) { e.preventDefault(); const b = bodies.current[i]; if (!b) return; b.x = Math.max(0, Math.min(size.current.w - item.width * size.current.scale, b.x + direction[0])); b.y = Math.max(0, b.y + direction[1]); b.vy = 0; }
-          }}><span className={styles.sprite} style={{backgroundImage:"url(/current-carry/voxel-"+i+".webp)"}}/><span className={styles.objectShadow}/></button>)}
+          }}><span className={styles.sprite} style={{backgroundImage:"url(/current-carry/"+(i === 4 ? "white-shoes" : i >= 10 ? "winter-"+(i-9) : "voxel-"+i)+".webp)"}}/><span className={styles.objectShadow}/></button>)}
         {selected !== null && <div ref={popup} id="carry-note" className={styles.note} role="region" aria-label={items[selected].name + " details"}>
           <div className={styles.noteBar}><span>INSPECT OBJECT</span><button onClick={() => choose(null)} aria-label="Close item details">×</button></div>
           <div className={styles.noteBody}><small>{items[selected].kind}</small><h2>{items[selected].name}</h2><p>{items[selected].note}</p>
