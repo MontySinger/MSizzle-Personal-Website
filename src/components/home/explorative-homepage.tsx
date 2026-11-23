@@ -1,3 +1,4 @@
+import { CarryShelf } from "@/app/current-carry/shelf";
 import { StructureHero } from "./structure-hero";
 import { ScrollReveals } from "./scroll-reveals";
 import { SectionBuilding } from "./section-building";
@@ -75,6 +76,8 @@ export function ExplorativeHomepage({
       <section className="band pt-40 md:pt-64" id="loves">
         <SectionLoves items={loves} categoryOrder={loveCategories} />
       </section>
+
+      <CarryShelf />
 
       <SectionAdvice accentIndex={adviceAccentIndex} />
 
