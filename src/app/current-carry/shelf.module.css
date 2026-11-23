@@ -30,3 +30,4 @@
 @media(prefers-reduced-motion:reduce){.stage::after{transition:none}}
 .stage {overflow:visible;}
 @media(max-width:600px){.room[data-inspecting=true]{padding-bottom:10rem;}}
+.stage[data-ready=false] .object {visibility:hidden;}

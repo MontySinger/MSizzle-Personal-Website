@@ -8,8 +8,14 @@ const items = [
   { name: "Ninja CREAMi", kind: "Something worth making room for", note: "One of my favorite things. More from me soon.", url: "", extra: "", label: "", width: 83, height: 112, mass: 2 },
   { name: "Cybertruck", kind: "Parked, for once", note: "A little version of a big favorite. More from me soon.", url: "https://www.tesla.com/cybertruck", extra: "", label: "", width: 138, height: 76, mass: 1.6 },
   { name: "The pocket light", kind: "ALTSON · rechargeable clip-on LED", note: "The little portable light I like. More from me soon.", url: "https://www.amazon.com/dp/B0C2C9QT91", extra: "", label: "", width: 80, height: 89, mass: .9 },
+  { name: "WHITIN barefoot shoes", kind: "Room for your toes", note: "My barefoot shoes.", url: "", extra: "", label: "", width: 112, height: 70, mass: .8 },
+  { name: "Strawberry rhubarb pie", kind: "Sweet meets tart", note: "Strawberry rhubarb pie. A favorite.", url: "", extra: "", label: "", width: 85, height: 72, mass: 1 },
+  { name: "Warheads", kind: "The sour corner", note: "Warheads candy.", url: "", extra: "", label: "", width: 72, height: 77, mass: .6 },
+  { name: "Concord grapes", kind: "A bunch worth keeping", note: "Concord grapes.", url: "", extra: "", label: "", width: 72, height: 74, mass: .7 },
+  { name: "Soursop", kind: "Something tropical", note: "Soursop.", url: "", extra: "", label: "", width: 85, height: 73, mass: 1.1 },
+  { name: "Mangosteen", kind: "Under the purple shell", note: "Mangosteen.", url: "", extra: "", label: "", width: 73, height: 72, mass: .8 },
 ];
-type Body = { x: number; y: number; vx: number; vy: number; angle: number; spin: number };
+type Body = { x: number; y: number; vx: number; vy: number; angle: number; spin: number; readyAt: number };
 const platforms = [{ x: .07, end: .83, y: .32 }, { x: .07, end: .93, y: .64 }, { x: .07, end: .99, y: .96 }];
 export function CarryShelf() {
   const stage = useRef<HTMLDivElement>(null);
@@ -23,24 +29,36 @@ export function CarryShelf() {
   const [light, setLight] = useState(false);
 
   function choose(id: number | null) { selectedRef.current = id; setSelected(id); }
-  function reset() {
+  function reset(drop = false) {
     const { w, h, scale } = size.current;
-    const positions = [.19, .47, .49, .8];
-    bodies.current = items.map((item, i) => ({ x: w * positions[i] - item.width * scale / 2, y: h * platforms[i < 2 ? 0 : 1].y - item.height * scale, vx: 0, vy: 0, angle: 0, spin: 0 }));
+    const homes = [[.2, 0], [.47, 0], [.24, 1], [.72, 0], [.54, 1], [.81, 1], [.18, 2], [.41, 2], [.64, 2], [.86, 2]];
+    bodies.current = items.map((item, i) => ({
+      x: w * homes[i][0] - item.width * scale / 2,
+      y: h * platforms[homes[i][1]].y - item.height * scale - (drop ? 48 + i % 3 * 7 : 0),
+      vx: 0, vy: 0, angle: drop ? (i % 2 ? -5 : 5) : 0, spin: 0,
+      readyAt: drop ? performance.now() + i * 65 : 0,
+    }));
     choose(null);
   }
   useEffect(() => {
     const el = stage.current!;
     const observer = new ResizeObserver(() => {
-      size.current = { w: el.clientWidth, h: el.clientHeight, scale: Math.max(.7, Math.min(1, el.clientWidth / 650)) };
+      size.current = { w: el.clientWidth, h: el.clientHeight, scale: Math.max(.63, Math.min(1, el.clientWidth / 650)) };
       el.style.setProperty("--item-scale", String(size.current.scale));
       reset();
     });
     observer.observe(el);
-    let visible = false;
-    const visibility = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }, { rootMargin: "100px" });
-    visibility.observe(el);
+    let visible = false, entered = false;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    const visibility = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible && !entered) {
+        entered = true;
+        reset(!reduced.matches);
+        el.dataset.ready = "true";
+      }
+    }, { threshold: .2 });
+    visibility.observe(el);
     let frame = 0, previous = performance.now();
     const tick = (now: number) => {
       const dt = Math.min((now - previous) / 1000, .025); previous = now;
@@ -48,7 +66,7 @@ export function CarryShelf() {
       if (!visible || document.hidden) { frame = requestAnimationFrame(tick); return; }
       bodies.current.forEach((b, i) => {
         const iw = items[i].width * scale, ih = items[i].height * scale;
-        if (drag.current?.id !== i) {
+        if (drag.current?.id !== i && now >= b.readyAt) {
           const oldBottom = b.y + ih;
           b.vy += 1100 * dt;
           b.x += b.vx * dt; b.y += b.vy * dt;
@@ -69,6 +87,7 @@ export function CarryShelf() {
       // Resolve contacts between objects without disturbing the item held by the pointer.
       for (let i = 0; i < bodies.current.length; i++) for (let j = i + 1; j < bodies.current.length; j++) {
         const a = bodies.current[i], b = bodies.current[j];
+        if (now < a.readyAt || now < b.readyAt) continue;
         const aw = items[i].width * scale, ah = items[i].height * scale, bw = items[j].width * scale, bh = items[j].height * scale;
         const ox = Math.min(a.x + aw, b.x + bw) - Math.max(a.x, b.x);
         const oy = Math.min(a.y + ah, b.y + bh) - Math.max(a.y, b.y);
@@ -107,7 +126,7 @@ export function CarryShelf() {
   }, []);
   return <section id="current-carry" aria-label="Things I keep close" className={styles.room} data-inspecting={selected !== null}>
     <div className={styles.cabinet} data-light={light}>
-      <div ref={stage} className={styles.stage} onKeyDown={e => { if (e.key === "Escape") choose(null); }}>
+      <div ref={stage} data-ready="false" className={styles.stage} onKeyDown={e => { if (e.key === "Escape") choose(null); }}>
         {platforms.map((s, i) => <div key={i} className={styles.shelf} aria-hidden="true" style={{ left: s.x * 100 + "%", width: (s.end - s.x) * 100 + "%", top: s.y * 100 + "%" }}></div>)}
         {items.map((item, i) => <button key={item.name} ref={el => { nodes.current[i] = el; }} className={styles.object} data-selected={selected === i} aria-label={item.name + ". Click for details, drag to move, or use arrow keys."} aria-expanded={selected === i} aria-controls="carry-note"
           style={{ width: "calc(" + item.width + "px * var(--item-scale))", height: "calc(" + item.height + "px * var(--item-scale))", "--sprite": i } as React.CSSProperties}
@@ -149,7 +168,7 @@ export function CarryShelf() {
           </div>
         </div>}
       </div>
-      <div className={styles.base}><button onClick={reset} aria-label="Reset shelf">↺</button></div>
+      <div className={styles.base}><button onClick={() => reset()} aria-label="Reset shelf">↺</button></div>
     </div>
 
   </section>;
