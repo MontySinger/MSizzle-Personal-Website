@@ -80,7 +80,7 @@ export function ExplorativeHomepage({
 
       <CarryShelf books={loves.filter(item => item.type === "Book" && item.published)} />
 
-      <PlacesMap places={loves.filter(item => item.type === "Place")} />
+      <PlacesMap />
 
       <SectionAdvice accentIndex={adviceAccentIndex} />
 

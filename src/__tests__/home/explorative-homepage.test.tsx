@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, within } from "@testing-library/react";
 import React from "react";
-import type { LoveItem } from "@/lib/notion-loves";
 
 vi.mock("@/app/current-carry/shelf", () => ({ CarryShelf: () => null }));
 
@@ -55,17 +54,14 @@ describe("ExplorativeHomepage orchestrator (21-05 rebuilt band structure)", () =
     vi.restoreAllMocks();
   });
 
-  it("puts a published favorite on the map and omits a private place", async () => {
+  it("shows the travel map even when the pinboard has no entries", async () => {
     const { ExplorativeHomepage } = await import("@/components/home/explorative-homepage");
-    const tetons: LoveItem = {
-      id: "39632e75-4858-8189-a9e7-d04a912aab9c", title: "Teton Range", type: "Place",
-      published: true, category: "Place", subtitle: "", note: "", cover: null, url: "",
-      order: null, youtubeId: null, lastEdited: "",
-    };
-    const privatePlace = { ...tetons, id: "39632e75-4858-8103-8184-d376dd774a49", title: "Network School", published: false };
-    render(<ExplorativeHomepage loves={[tetons, privatePlace]} />);
-    expect(screen.getByRole("button", { name: "Teton Range" })).toBeTruthy();
-    expect(screen.queryByRole("button", { name: "Network School" })).toBeNull();
+    render(<ExplorativeHomepage />);
+    const map = within(screen.getByRole("region", { name: "19 countries Monty has visited" }));
+    expect(map.getAllByRole("button")).toHaveLength(19);
+    expect(map.getByRole("button", { name: "Singapore" })).toBeTruthy();
+    expect(map.getByRole("button", { name: "Netherlands · Amsterdam" })).toBeTruthy();
+    expect(map.queryByRole("button", { name: "North Korea" })).toBeNull();
   });
 
   it("mounts ScrollReveals island", async () => {
