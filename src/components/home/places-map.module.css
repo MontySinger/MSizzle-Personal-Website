@@ -13,7 +13,13 @@
   transition:transform .23s ease-out, filter .23s ease-out;
 }
 .countries g[data-visited=true] {cursor:pointer; touch-action:manipulation;}
-.countries g[data-country=SGP] .land {stroke:#76618c; stroke-width:1.4; transform-box:fill-box; transform-origin:center; scale:2.1;}
+/* The pin tips sit on the land; their stationary hit areas also cover the heads. */
+.pins { cursor:pointer; }
+.pinArt {pointer-events:none; transition:transform .23s ease-out;}
+.pinArt line {stroke:#663e32; stroke-width:1.7; stroke-linecap:round;}
+.pinArt circle {fill:#b33225; stroke:#fff4dc; stroke-width:1.35;}
+.pins g[data-raised=true] .pinArt {transform:translateY(-4px);}
+
 .countries g[data-raised=true] .land,.countries g:focus-visible .land {
   transform:translateY(-4px);
   filter:saturate(1.25) brightness(.94);
@@ -32,6 +38,7 @@
 .caption label span {font-size:.73rem; color:#685f53;}
 .caption select {min-height:44px; font:inherit; cursor:pointer; color:inherit; background:transparent;}
 @media(prefers-reduced-motion:reduce){
-  .land {transition:none;}
+  .land,.pinArt {transition:none;}
+  .pins g[data-raised=true] .pinArt {transform:none;}
   .countries g[data-raised=true] .land,.countries g:focus-visible .land {transform:none;}
 }
