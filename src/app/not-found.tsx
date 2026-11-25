@@ -1,23 +1,29 @@
-import Link from 'next/link'
-import type { Metadata } from 'next'
+import Link from "next/link";
+import Image from "next/image";
+import type { Metadata } from "next";
+import styles from "./not-found.module.css";
 
 export const metadata: Metadata = {
-  title: 'Page Not Found | Monty Singer',
-  description: 'The page you were looking for does not exist.',
+  title: "Page not found",
   robots: { index: false, follow: false },
-}
+};
 
 export default function NotFound() {
   return (
-    <div className="mx-auto max-w-[66ch] px-6 pb-16 pt-32 md:px-0">
-      <h1 className="text-2xl font-normal tracking-tight sm:text-3xl">404</h1>
-      <p className="mt-4 text-lg opacity-80">
-        This page does not exist, or it wandered off.
-      </p>
-      <p className="mt-6">
-        <Link href="/" className="underline">Go home</Link>, or read the{' '}
-        <Link href="/writing" className="underline">writings</Link>.
-      </p>
-    </div>
-  )
+    <section className={styles.room}>
+      <div className={styles.shelf}>
+        <span aria-hidden="true">4</span>
+        <Link href="/#current-carry" className={styles.sock} aria-label="Return the socks to Monty’s shelf">
+          <Image src="/current-carry/darn-tough-mark.webp" width={96} height={100} alt="" />
+        </Link>
+        <span aria-hidden="true">4</span>
+      </div>
+      <h1><span className="sr-only">404. </span>This page wandered off.</h1>
+      <p>At least you found the socks.</p>
+      <nav aria-label="Find your way back">
+        <Link href="/">Back home <span aria-hidden="true">↗</span></Link>
+        <Link href="/writing">Browse essays</Link>
+      </nav>
+    </section>
+  );
 }

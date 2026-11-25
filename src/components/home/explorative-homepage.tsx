@@ -1,3 +1,4 @@
+import { PlacesMap } from "./places-map";
 import { CarryShelf } from "@/app/current-carry/shelf";
 import { StructureHero } from "./structure-hero";
 import { ScrollReveals } from "./scroll-reveals";
@@ -78,6 +79,8 @@ export function ExplorativeHomepage({
       </section>
 
       <CarryShelf books={loves.filter(item => item.type === "Book" && item.published)} />
+
+      <PlacesMap places={loves.filter(item => item.type === "Place")} />
 
       <SectionAdvice accentIndex={adviceAccentIndex} />
 

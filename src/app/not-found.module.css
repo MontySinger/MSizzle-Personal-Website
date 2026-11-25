@@ -1,0 +1,13 @@
+.room {min-height:75svh; max-width:50rem; margin:auto; padding:clamp(7rem,16vh,11rem) 1.25rem 5rem; text-align:center; color:var(--color-text,#342f29);}
+.shelf {position:relative; display:flex; gap:clamp(.4rem,2vw,1rem); justify-content:center; align-items:flex-end; padding:0 1rem 4px; width:min(100%,28rem); margin:0 auto clamp(2.6rem,6vh,4rem); border-bottom:9px solid #684632; box-shadow:0 3px 0 #422e21; font: normal clamp(6rem,16vw,10rem)/.75 Georgia,serif; color:#504737;}
+.shelf::before,.shelf::after {content:""; position:absolute; bottom:-21px; width:6px; height:10px; background:#5b402f;}
+.shelf::before {left:10%;}.shelf::after {right:10%;}
+.sock {display:grid; place-items:center; width:.67em; height:.77em; border:2px dashed #a79477; border-radius:50%; color:inherit;}
+.sock img {width:82%; height:auto; transition:transform .2s;}
+.sock:hover img,.sock:focus-visible img {transform:translateY(-5px) rotate(-6deg);}
+.room h1 {font:normal clamp(2.15rem,5vw,3.6rem)/1.08 Georgia,serif; letter-spacing:-.045em;}
+.room p {margin:.7rem 0 1.4rem; color:#60594d;}
+.room nav {display:flex; justify-content:center; gap:1.5rem; align-items:center;}
+.room nav a {display:inline-flex; gap:.5rem; align-items:center; padding:.75rem 0; text-decoration:underline; text-underline-offset:4px;}
+.room nav a:first-child {padding:.75rem 1.1rem; background:#403a30; color:#fff9ec; text-decoration:none;}
+@media(prefers-reduced-motion:reduce){.sock img{transition:none;}.sock:hover img,.sock:focus-visible img{transform:none;}}
