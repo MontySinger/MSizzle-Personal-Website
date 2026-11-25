@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import type { LoveItem } from "@/lib/notion-loves";
 import styles from "./places-map.module.css";
 
-// Positions match the Natural Earth map's equirectangular bounds, 84°N to 60°S.
+// Pin tips in percent of the oblique Natural Earth voxel illustration.
 const locations = [
-  { id: "39632e75-4858-8189-a9e7-d04a912aab9c", region: "Wyoming, United States", lat: 43.79, lon: -110.84, photo: "/home/tetons.jpg" },
-  { id: "39632e75-4858-813d-ac81-c3f0b8739c98", region: "Copenhagen, Denmark", lat: 55.67, lon: 12.55 },
-  { id: "39632e75-4858-8103-8184-d376dd774a49", region: "Forest City, Malaysia", lat: 1.34, lon: 103.59 },
+  { id: "39632e75-4858-8189-a9e7-d04a912aab9c", region: "Wyoming, United States", x: 24.95, y: 28.23, ink: "#b63c22", highlight: "#ff9773", photo: "/home/tetons.jpg" },
+  { id: "39632e75-4858-813d-ac81-c3f0b8739c98", region: "Copenhagen, Denmark", x: 54.83, y: 25.24, ink: "#82419f", highlight: "#e6a4f4" },
+  { id: "39632e75-4858-8103-8184-d376dd774a49", region: "Forest City, Malaysia", x: 76.69, y: 59.97, ink: "#175991", highlight: "#85c8fc" },
 ];
 
 export function PlacesMap({ places }: { places: LoveItem[] }) {
@@ -17,30 +17,45 @@ export function PlacesMap({ places }: { places: LoveItem[] }) {
     const item = places.find(place => place.id === location.id && place.published);
     return item ? [{ ...location, item }] : [];
   });
-  const [selection, select] = useState("");
-  const active = pins.find(pin => pin.id === selection) ?? pins[0];
-  if (!active) return null;
+  const [selection, select] = useState<string | null>(null);
+  const trigger = useRef<HTMLButtonElement | null>(null);
+  const detailId = useId();
+  const active = pins.find(pin => pin.id === selection);
+
+  function close() {
+    select(null);
+    trigger.current?.focus({ preventScroll: true });
+  }
+
+  if (!pins.length) return null;
   return (
-    <section id="places" aria-labelledby="places-title" className={styles.section}>
-      <h2 id="places-title">Favorite places</h2>
-      <div className={styles.sheet}>
-        <div className={styles.map} role="group" aria-label="Choose a place on the world map">
-          {pins.map(pin => (
-            <button key={pin.id} type="button" className={styles.pin}
-              style={{ left: ((pin.lon + 180) / 360 * 100) + "%", top: ((84 - pin.lat) / 144 * 100) + "%" }}
-              aria-label={pin.item.title} aria-pressed={active.id === pin.id} onClick={() => select(pin.id)}>
-              <span />
-            </button>
-          ))}
-        </div>
-        <div className={styles.postcard} aria-live="polite">
-          <Image src={active.photo ?? `/pinboard/${active.id}.webp`} width={190} height={130}
+    <section id="places" aria-label="Favorite places" className={styles.section}
+      onKeyDown={event => { if (active && event.key === "Escape") close(); }}>
+      <div className={styles.map} role="group" aria-label="Explore the map pins">
+        {pins.map(pin => (
+          <button key={pin.id} type="button" className={styles.pin}
+            style={{ left: pin.x + "%", top: pin.y + "%", "--ink": pin.ink, "--glint": pin.highlight } as CSSProperties}
+            aria-label={pin.item.title} aria-expanded={selection === pin.id} aria-controls={detailId}
+            onClick={event => {
+              trigger.current = event.currentTarget;
+              select(selection === pin.id ? null : pin.id);
+            }}>
+            <span className={styles.tack} aria-hidden="true"><i /></span>
+            <span className={styles.label} aria-hidden="true">{pin.item.title}</span>
+          </button>
+        ))}
+      </div>
+      <div id={detailId} className={styles.detail} hidden={!active}>
+        {active && <>
+          <Image src={active.photo ?? `/pinboard/${active.id}.webp`} width={144} height={112}
             alt="" className={styles.photo} />
-          <div><small>{active.region}</small><h3>{active.item.title}</h3>
+          <div aria-live="polite">
+            <small>{active.region}</small><h2>{active.item.title}</h2>
             {active.item.note && <p>{active.item.note}</p>}
             {active.item.url && <a href={active.item.url} target="_blank" rel="noreferrer">Explore this place ↗</a>}
           </div>
-        </div>
+          <button className={styles.close} type="button" aria-label="Close place details" onClick={close}>×</button>
+        </>}
       </div>
     </section>
   );
